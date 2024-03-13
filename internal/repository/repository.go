@@ -1,6 +1,6 @@
 package repository
 
-import "vk_intern/pkg/client"
+import "vk/pkg/client"
 
 type Repository interface {
 }

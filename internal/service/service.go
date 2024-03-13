@@ -1,6 +1,6 @@
 package service
 
-import "vk_intern/internal/repository"
+import "vk/internal/repository"
 
 type Service interface {
 }

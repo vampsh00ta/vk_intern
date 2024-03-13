@@ -10,9 +10,9 @@ import (
 	"vk/internal/repository"
 	"vk/internal/service"
 
-	"vk/internal/transport/http/v1"
+	//"vk/internal/transport/http/v1"
 	"vk/pkg/client"
-	"vk/pkg/httpserver"
+	//"vk/pkg/httpserver"
 	"vk/pkg/logger"
 )
 
@@ -21,7 +21,6 @@ func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
 	ctx := context.Background()
-	// Repository
 	pg, err := client.NewPostgresClient(ctx, 5, cfg.PG)
 	if err != nil {
 		l.Fatal(fmt.Errorf("vk - Run - postgres.New: %w", err))
@@ -29,30 +28,28 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 	repo := repository.New(pg)
 
-	// Service
 	srvc := service.New(repo)
-
-	// HTTP Server
-	handler := gin.New()
-	v1.NewRouter(handler, l, srvc)
-	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
+	srvc = srvc
+	//handler := gin.New()
+	//v1.NewRouter(handler, l, srvc)
+	//httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	select {
-	case s := <-interrupt:
-		l.Info("vk - Run - signal: " + s.String())
-	case err = <-httpServer.Notify():
-		l.Error(fmt.Errorf("vk - Run - httpServer.Notify: %w", err))
-
-	}
-
-	// Shutdown
-	err = httpServer.Shutdown()
-	if err != nil {
-		l.Error(fmt.Errorf("vk - Run - httpServer.Shutdown: %w", err))
-	}
+	//select {
+	//case s := <-interrupt:
+	//	l.Info("vk - Run - signal: " + s.String())
+	//case err = <-httpServer.Notify():
+	//	l.Error(fmt.Errorf("vk - Run - httpServer.Notify: %w", err))
+	//
+	//}
+	//
+	//// Shutdown
+	//err = httpServer.Shutdown()
+	//if err != nil {
+	//	l.Error(fmt.Errorf("vk - Run - httpServer.Shutdown: %w", err))
+	//}
 
 }

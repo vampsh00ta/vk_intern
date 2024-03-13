@@ -10,11 +10,11 @@ logger:
   rollbar_env: 'vk'
 
 postgres:
-  username: "maidtp"
-  password: "maidtp"
+  username: "vk_intern"
+  password: "vk_intern"
   host: "localhost"
   port: "5432"
-  name: "maidtp"
+  name: "vk_intern"
   pool_max: 10
 
 #rabbitmq:
