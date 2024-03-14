@@ -1,14 +1,19 @@
 package repository
 
-import "vk/pkg/client"
+import (
+	"gorm.io/gorm"
+)
 
 type Repository interface {
+	Actor
+	Film
+	Tx
 }
 type Pg struct {
-	client client.Client
+	client *gorm.DB
 }
 
-func New(client client.Client) Repository {
+func New(client *gorm.DB) Repository {
 	return &Pg{
 		client,
 	}
