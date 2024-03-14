@@ -31,11 +31,11 @@ func (p Pg) AddFilm(ctx context.Context, film models.Film) (int, error) {
 		return -1, err
 	}
 
-	//if len(film.Actors) != 0 {
-	//	if err := p.AddActorsToFilms(ctx, id, film.Actors...); err != nil {
-	//		return -1, err
-	//	}
-	//}
+	if len(film.Actors) != 0 {
+		if err := p.AddActorsToFilms(ctx, id, film.Actors...); err != nil {
+			return -1, err
+		}
+	}
 	return id, nil
 }
 
@@ -113,19 +113,29 @@ func (p Pg) GetFilmById(ctx context.Context, filmId int) (models.Film, error) {
 		return models.Film{}, err
 	}
 
-	//film, err := pgx.CollectOneRow(row, pgx.RowToStructByNameLax[models.Film])
-	//if err := pgxscan.ScanRow(&film, row); err != nil {
-	//	return models.Film{}, err
-	//}
 	return film, nil
 }
-
 func (p Pg) GetFilmByTitle(ctx context.Context, filmTitle string) (models.Film, error) {
-	//TODO implement me
-	panic("implement me")
+	var film models.Film
+	tx := p.getTx(ctx)
+
+	err := tx.Model(&models.Film{}).Preload("Actors").
+		Where("title = ? ", filmTitle).
+		First(&film).Error
+	if err != nil {
+		return models.Film{}, err
+	}
+	return film, nil
+
 }
 
 func (p Pg) GetFilms(ctx context.Context) ([]models.Film, error) {
-	//TODO implement me
-	panic("implement me")
+	var films []models.Film
+	tx := p.getTx(ctx)
+
+	err := tx.Model(&models.Film{}).Preload("Actors").Find(&films).Error
+	if err != nil {
+		return nil, err
+	}
+	return films, nil
 }

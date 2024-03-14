@@ -13,7 +13,7 @@ type Actor interface {
 	ChangeActorByFullName(ctx context.Context, name, middlename, surname string) error
 	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error
 
-	GetActorById(ctx context.Context, actorId string) (models.Actor, error)
+	GetActorById(ctx context.Context, actorId int) (models.Actor, error)
 	GetActorByFullName(ctx context.Context, name, middlename, surname string) (models.Actor, error)
 	GetActors(ctx context.Context) ([]models.Actor, error)
 }
@@ -60,17 +60,44 @@ func (p Pg) AddFilmsToActor(ctx context.Context, actorId int, films ...models.Fi
 	panic("implement me")
 }
 
-func (p Pg) GetActorById(ctx context.Context, actorId string) (models.Actor, error) {
-	//TODO implement me
-	panic("implement me")
-}
+func (p Pg) GetActorById(ctx context.Context, filmId int) (models.Actor, error) {
+	//q := `select  film.id as film_id,  title , description , release_date , rating ,actor.id as actor_id ,actor.name , surname , middlename , gender , birth_date from actor
+	//join actor_films on actor.id =actor_films.actor_id
+	//	join film on film.id = actor_films.film_id where film.id = $1
+	//	`
+	var actor models.Actor
+	tx := p.getTx(ctx)
 
+	err := tx.Model(&models.Actor{}).Preload("Films").
+		Where("id = ?", filmId).
+		First(&actor).Error
+	if err != nil {
+		return models.Actor{}, err
+	}
+
+	return actor, nil
+}
 func (p Pg) GetActorByFullName(ctx context.Context, name, middlename, surname string) (models.Actor, error) {
-	//TODO implement me
-	panic("implement me")
+	var actor models.Actor
+	tx := p.getTx(ctx)
+
+	err := tx.Model(&models.Actor{}).Preload("Films").
+		Where("name = ? and middlename = ? and surname = ?  ", name, middlename, surname).
+		First(&actor).Error
+	if err != nil {
+		return models.Actor{}, err
+	}
+	return actor, nil
+
 }
 
 func (p Pg) GetActors(ctx context.Context) ([]models.Actor, error) {
-	//TODO implement me
-	panic("implement me")
+	var actors []models.Actor
+	tx := p.getTx(ctx)
+
+	err := tx.Model(&models.Actor{}).Preload("Films").Find(&actors).Error
+	if err != nil {
+		return nil, err
+	}
+	return actors, nil
 }
