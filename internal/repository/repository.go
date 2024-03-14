@@ -7,6 +7,7 @@ import (
 type Repository interface {
 	Actor
 	Film
+	Customer
 	Tx
 }
 type Pg struct {
