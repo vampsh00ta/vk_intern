@@ -1,25 +1,32 @@
 package v1
 
-//import (
-//	"net/http"
-//	"vk_intern/internal/service"
-//	"vk_intern/pkg/logger"
-//)
-//
-//type transport struct {
-//	s service.Service
-//	l logger.Interface
-//}
-//
-//func newTransport(handler *http.ServeMux, t service.Service, l logger.Interface) {
-//	r := &transport{t, l}
-//	r = r
-//	//h := handler.Group("/translation")
-//	//{
-//	//	h.GET("/history", r.history)
-//	//	h.POST("/do-translate", r.doTranslate)
-//	//}
-//}
+import (
+	"net/http"
+	"vk/internal/service"
+)
+
+type transport struct {
+	s service.Service
+	//l logger.Interface
+}
+
+func NewTransport(t service.Service) *http.ServeMux {
+	r := &transport{t}
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("POST /login", r.Login)
+
+	mux.HandleFunc("GET /films", r.GetFilms)
+	mux.HandleFunc("POST /film", r.AddFilm)
+
+	return mux
+	//h := handler.Group("/translation")
+	//{
+	//	h.GET("/history", r.history)
+	//	h.POST("/do-translate", r.doTranslate)
+	//}
+}
+
 //
 ////func NewRouter(handler *gin.Engine, l logger.Interface, t service.Service) {
 ////	// Options
