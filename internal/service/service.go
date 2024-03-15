@@ -6,6 +6,8 @@ import (
 )
 
 type Service interface {
+	Auth
+	Film
 }
 type service struct {
 	repo repository.Repository
