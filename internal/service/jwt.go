@@ -1,56 +1,61 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 	"vk/internal/repository/models"
 )
 
-func DecodeToken(jwt string) {
-
-}
-func EncodeToken(jwt string) {
-
-}
-
-var secretKey = []byte("secret-key")
-
-func createToken(customer models.Customer) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"id":       customer.Id,
-			"username": customer.Username,
-			"admin":    customer.Admin,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
-		})
-
-	tokenString, err := token.SignedString(secretKey)
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
-}
-
-// func (s service) VerifyCustomer()
 type JwtCustomClaim struct {
 	models.Customer
 	jwt.RegisteredClaims
 }
 
-func verifyToken(tokenString string) (*JwtCustomClaim, error) {
-	// pass your custom claims to the parser function
-	token, err := jwt.ParseWithClaims(tokenString, &JwtCustomClaim{}, func(token *jwt.Token) (interface{}, error) {
+func (s service) CreateAccessToken(customer models.Customer, expiry int) (accessToken string, err error) {
+	exp := time.Now().Add(time.Hour * time.Duration(expiry))
+	claims := &JwtCustomClaim{
+		customer,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(exp),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(s.cfg.Secret))
+	if err != nil {
+		return "", err
+	}
+	return t, err
+}
+func (s service) IsAuthorized(requestToken string) (bool, error) {
+	_, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("unexpected signing method")
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(secretKey), nil
+		return []byte(s.cfg.Secret), nil
 	})
 	if err != nil {
-		return &JwtCustomClaim{}, err
+		return false, err
 	}
-	// type-assert `Claims` into a variable of the appropriate type
-	myClaims := token.Claims.(*JwtCustomClaim)
-	return myClaims, nil
+	return true, nil
+}
+func (s service) ExtractCustomerFromToken(requestToken string) (JwtCustomClaim, error) {
+	token, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(s.cfg.Secret), nil
+	})
+
+	if err != nil {
+		return JwtCustomClaim{}, err
+	}
+
+	claims, ok := token.Claims.(JwtCustomClaim)
+
+	if !ok && !token.Valid {
+		return JwtCustomClaim{}, fmt.Errorf("Invalid Token")
+	}
+
+	return claims, nil
 }
