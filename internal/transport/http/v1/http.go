@@ -18,6 +18,7 @@ func NewTransport(t service.Service) *http.ServeMux {
 
 	mux.HandleFunc("GET /films", r.GetFilms)
 	mux.HandleFunc("POST /film", r.AddFilm)
+	mux.HandleFunc("DELETE /film", r.DeleteFilm)
 
 	return mux
 	//h := handler.Group("/translation")

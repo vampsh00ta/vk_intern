@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"gopkg.in/yaml.v3"
 	"os"
 )
 
@@ -13,6 +14,7 @@ type (
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
 		PG   `yaml:"postgres"`
+		Jwt  `json:"jwt"`
 	}
 
 	App struct {
@@ -26,6 +28,9 @@ type (
 
 	Log struct {
 		Level string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
+	}
+	Jwt struct {
+		Secret string `env-required:"true" yaml:"secret_key"   env:"secret_key"`
 	}
 
 	PG struct {

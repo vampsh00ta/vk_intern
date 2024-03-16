@@ -38,7 +38,9 @@ func (db Pg) getTx(ctx context.Context) *gorm.DB {
 	tx := ctx.Value("tx")
 	txModel, ok := tx.(*gorm.DB)
 	if !ok {
-		return nil
+		return db.client
+	} else {
+		return txModel
+
 	}
-	return txModel
 }

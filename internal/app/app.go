@@ -6,11 +6,15 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlog "gorm.io/gorm/logger"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"vk/config"
 	"vk/internal/repository"
+	"vk/internal/transport/http/v1"
+
 	"vk/internal/service"
 	//"vk/internal/transport/http/v1"
 	//"vk/pkg/client"
@@ -31,6 +35,7 @@ func Run(cfg *config.Config) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: gormlog.Default.LogMode(gormlog.Info),
 	})
+	//l := log.Default()
 	ctx := context.Background()
 	//pg, err := client.NewPostgresClient(ctx, 5, cfg.PG)
 	if err != nil {
@@ -48,29 +53,30 @@ func Run(cfg *config.Config) {
 	//fmt.Println(f2[0].Actors, err)
 	//a1, err := repo.GetActors(ctx)
 	//fmt.Println(a1, err)
-	customer, err := repo.GetCustomerById(ctx, 1)
-	fmt.Println(customer)
-	repo.Commit(ctx)
+	//customer, err := repo.GetCustomerById(ctx, 1)
+	//fmt.Println(customer)
+	//repo.Commit(ctx)
 	srvc := service.New(repo)
-	srvc = srvc
+	//srvc = srvc
 	//handler := gin.New()
 	//v1.NewRouter(handler, l, srvc)
 	//httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
+	t := v1.NewTransport(srvc)
 
-	//select {
-	//case s := <-interrupt:
-	//	l.Info("vk - Run - signal: " + s.String())
-	//case err = <-httpServer.Notify():
-	//	l.Error(fmt.Errorf("vk - Run - httpServer.Notify: %w", err))
-	//
-	//}
+	log.Print("Listening...")
+	http.ListenAndServe(":8000", t)
+	select {
+	case <-interrupt:
+		panic("exit")
+
+	}
 	//
 	//// Shutdown
-	//err = httpServer.Shutdown()
+	//err = http.Shutdown()
 	//if err != nil {
 	//	l.Error(fmt.Errorf("vk - Run - httpServer.Shutdown: %w", err))
 	//}

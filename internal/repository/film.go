@@ -18,7 +18,9 @@ type Film interface {
 	AddActorsToFilms(ctx context.Context, filmId int, actor ...models.Actor) error
 
 	GetFilmById(ctx context.Context, filmId int) (models.Film, error)
-	GetFilmByTitle(ctx context.Context, filmTitle string) (models.Film, error)
+	GetFilmsByActorName(ctx context.Context, name, middlename, surname string) ([]models.Film, error)
+
+	GetFilmsByTitle(ctx context.Context, filmTitle string) ([]models.Film, error)
 	GetFilms(ctx context.Context) ([]models.Film, error)
 }
 
@@ -82,10 +84,9 @@ func (p Pg) ChangeFilmByFullName(ctx context.Context, filmId int) error {
 }
 
 func (p Pg) AddActorsToFilms(ctx context.Context, filmId int, actors ...models.Actor) error {
-	q := `insert into actor_films ( actor_films,film_id) values `
+	q := `insert into actor_films ( film_id,actor_id) values `
 	inputVals := []any{filmId}
 	tx := p.getTx(ctx)
-
 	for i, actor := range actors {
 		q += fmt.Sprintf("($1,$%d),", i+2)
 		inputVals = append(inputVals, actor.Id)
@@ -115,18 +116,35 @@ func (p Pg) GetFilmById(ctx context.Context, filmId int) (models.Film, error) {
 
 	return film, nil
 }
-func (p Pg) GetFilmByTitle(ctx context.Context, filmTitle string) (models.Film, error) {
-	var film models.Film
+func (p Pg) GetFilmsByTitle(ctx context.Context, filmTitle string) ([]models.Film, error) {
+	var films []models.Film
 	tx := p.getTx(ctx)
 
 	err := tx.Model(&models.Film{}).Preload("Actors").
-		Where("title = ? ", filmTitle).
-		First(&film).Error
+		Where("title like $1 ", "%"+filmTitle+"%").
+		Find(&films).Error
 	if err != nil {
-		return models.Film{}, err
+		return nil, err
 	}
-	return film, nil
+	return films, nil
 
+}
+func (p Pg) GetFilmsByActorName(ctx context.Context, name, middlename, surname string) ([]models.Film, error) {
+	var films []models.Film
+	tx := p.getTx(ctx)
+
+	err := tx.Model(&models.Film{}).
+		Joins("join actor_films on actor_films.film_id = film.id").
+		Joins("join actor on actor_films.actor_id = actor.id").
+		Where("actor.name like $1 and actor.middlename like $2 and actor.surname like $3",
+			"%"+name+"%", "%"+middlename+"%", "%"+surname+"%").
+		Preload("Actors").
+		Find(&films).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return films, nil
 }
 
 func (p Pg) GetFilms(ctx context.Context) ([]models.Film, error) {

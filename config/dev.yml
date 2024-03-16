@@ -8,7 +8,8 @@ http:
 logger:
   log_level: 'debug'
   rollbar_env: 'vk'
-
+jwt:
+  secret_key: "slatt"
 postgres:
   username: "vk_intern"
   password: "vk_intern"

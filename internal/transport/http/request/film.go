@@ -13,3 +13,7 @@ type AddFilm struct {
 	Actors      []models.Actor `json:"actors,omitempty" gorm:"many2many:actor_films;"`
 	//models.Film
 }
+
+type DeleteFilm struct {
+	Id int `json:"id"`
+}
