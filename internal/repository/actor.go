@@ -11,7 +11,7 @@ type Actor interface {
 	DeleteActorByFullName(ctx context.Context, name string) error
 	ChangeActorByID(ctx context.Context, actor models.Actor) error
 	ChangeActorByFullName(ctx context.Context, name string) error
-	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film)
+	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error
 	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error
 
 	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error

@@ -87,6 +87,45 @@ func (p Pg) ChangeFilmByID(ctx context.Context, film models.Film) error {
 	return nil
 }
 
+// поправить рефлект
+func (p Pg) ChangeFilmByIDPartly(ctx context.Context, film models.Film) error {
+	q := `update film  set `
+
+	tx := p.getTx(ctx)
+	count := 2
+	input := []any{film.Id}
+	v := reflect.ValueOf(film)
+	typ := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		fi := typ.Field(i)
+
+		if tagv := fi.Tag.Get("db"); tagv != "" && tagv != "id" {
+			if !v.Field(i).IsZero() {
+				q += fmt.Sprintf("%s  = $%d,", tagv, count)
+				input = append(input, v.Field(i).Interface())
+				count += 1
+
+			}
+
+		}
+	}
+	if count > 2 {
+		q = q[:len(q)-1] + " where id = $1"
+		if err := tx.Raw(q, input...).Scan(nil).Error; err != nil {
+
+			return err
+		}
+	}
+
+	if len(film.ActorIds) > 0 {
+		if err := p.ChangeFilmsActors(ctx, film.Id, film.ActorIds...); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 func (p Pg) ChangeFilmsActors(ctx context.Context, filmId int, actorsFilms ...int) error {
 	tx := p.getTx(ctx)
 
@@ -108,41 +147,6 @@ func (p Pg) ChangeFilmsActors(ctx context.Context, filmId int, actorsFilms ...in
 	if err := tx.Raw(q, input...).Scan(&filmId).Error; err != nil {
 		return err
 	}
-	fmt.Println(q)
-	return nil
-}
-
-// поправить рефлект
-func (p Pg) ChangeFilmByIDPartly(ctx context.Context, film models.Film) error {
-	q := `update film  set `
-
-	tx := p.getTx(ctx)
-	count := 2
-	input := []any{film.Id}
-	v := reflect.ValueOf(film)
-	typ := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		fi := typ.Field(i)
-		if tagv := fi.Tag.Get("db"); tagv != "" && tagv != "id" {
-			q += fmt.Sprintf("%s  = $%d,", tagv, count)
-			input = append(input, v.Field(i).Interface())
-			count += 1
-
-		}
-	}
-
-	q = q[:len(q)-1] + " where id = $1"
-	if err := tx.Raw(q, input...).Scan(nil).Error; err != nil {
-
-		return err
-	}
-	if len(film.ActorIds) > 0 {
-		if err := p.ChangeFilmsActors(ctx, film.Id, film.ActorIds...); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 func (p Pg) ChangeFilmByFullName(ctx context.Context, filmId int) error {
