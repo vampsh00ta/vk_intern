@@ -8,12 +8,20 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/repository/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/actor.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/repository/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/film.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/repository/models/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/models/actor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/repository/models/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/models/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/repository/models/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/models/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/request/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/response/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/response/film.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/utils.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -9,9 +9,33 @@ type Film interface {
 	AddFilm(ctx context.Context, film models.Film) (int, error)
 	DeleteFilm(ctx context.Context, id int) error
 
+	ChangeFilm(ctx context.Context, film models.Film) error
+	ChangeFilmPartly(ctx context.Context, film models.Film) error
+
 	GetFilms(ctx context.Context, sortBy, orderBy string) ([]models.Film, error)
 	GetFilmsByTitle(ctx context.Context, title string, sortBy, orderBy string) ([]models.Film, error)
 	GetFilmsByActorName(ctx context.Context, name string, sortBy, orderBy string) ([]models.Film, error)
+}
+
+func (s service) ChangeFilm(ctx context.Context, film models.Film) error {
+	ctx = s.repo.Begin(ctx)
+	defer s.repo.Commit(ctx)
+	if err := s.repo.ChangeFilmByID(ctx, film); err != nil {
+		s.repo.Rollback(ctx)
+
+		return err
+	}
+	return nil
+}
+func (s service) ChangeFilmPartly(ctx context.Context, film models.Film) error {
+	ctx = s.repo.Begin(ctx)
+	defer s.repo.Commit(ctx)
+	if err := s.repo.ChangeFilmByIDPartly(ctx, film); err != nil {
+		s.repo.Rollback(ctx)
+
+		return err
+	}
+	return nil
 }
 
 func (s service) DeleteFilm(ctx context.Context, id int) error {

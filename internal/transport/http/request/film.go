@@ -6,11 +6,13 @@ import (
 )
 
 type AddFilm struct {
-	Title       string         `json:"title,omitempty" db:"title"`
-	Description string         `json:"description,omitempty" db:"description"`
-	Rating      int            `json:"rating,omitempty" db:"rating"`
-	ReleaseDate time.Time      `json:"release_date,omitempty" db:"release_date"`
-	Actors      []models.Actor `json:"actors,omitempty" gorm:"many2many:actor_films;"`
+	Title       string    `json:"title,omitempty" `
+	Description string    `json:"description,omitempty" `
+	Rating      int       `json:"rating,omitempty" `
+	ReleaseDate time.Time `json:"release_date,omitempty"`
+	//Actors      []models.Id `json:"actors,omitempty" `
+	Actors []models.Actor `json:"actors,omitempty" `
+	//
 	//models.Film
 }
 type GetFilm struct {
@@ -19,6 +21,14 @@ type GetFilm struct {
 	Name    string `json:"name,omitempty" schema:"name"`
 	Title   string `json:"title,omitempty" schema:"title"`
 }
+type UpdateFilm struct {
+	Id          int       `json:"id"  validate:"required"`
+	Title       string    `json:"title,omitempty" `
+	Description string    `json:"description,omitempty" `
+	Rating      int       `json:"rating,omitempty" `
+	ReleaseDate time.Time `json:"release_date,omitempty"`
+	Actors      []int     `json:"actors,omitempty" `
+}
 type DeleteFilm struct {
-	Id int `json:"id"`
+	Id int `json:"id"  validate:"required"`
 }

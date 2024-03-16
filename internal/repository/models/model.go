@@ -5,3 +5,7 @@ type Customer struct {
 	Username string `json:"username,omitempty" db:"username"`
 	Admin    bool   `json:"admin,omitempty" db:"admin"`
 }
+
+type Id struct {
+	Id string `json:"id,omitempty"`
+}

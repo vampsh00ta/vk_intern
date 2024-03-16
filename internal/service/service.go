@@ -8,6 +8,7 @@ import (
 type Service interface {
 	Auth
 	Film
+	Actor
 }
 type service struct {
 	repo repository.Repository

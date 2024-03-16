@@ -11,25 +11,29 @@ type Actor interface {
 	DeleteActorByFullName(ctx context.Context, name string) error
 	ChangeActorByID(ctx context.Context, actor models.Actor) error
 	ChangeActorByFullName(ctx context.Context, name string) error
-	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error
+	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film)
+	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error
+
+	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error
 
 	GetActorById(ctx context.Context, actorId int) (models.Actor, error)
 	GetActorByFullName(ctx context.Context, name string) (models.Actor, error)
 	GetActors(ctx context.Context) ([]models.Actor, error)
 }
 
+// func (p Pg) AddFilmsToActorById(ctx context.Context, actorId int, filmIds ...models.Film) error
 func (p Pg) AddActor(ctx context.Context, actor models.Actor) (int, error) {
 	var id int
 	//q := `insert into actor (  name ,surname , middlename  ,birth_date ) values($1,$2,$3,$4) returning id`
-	q := `insert into actor (  name ,gender  ,birth_date ) values($1,$2,$3,$4) returning id`
+	q := `insert into actor (  name ,gender  ,birth_date ) values($1,$2,$3) returning id`
 	tx := p.getTx(ctx)
 	if err := tx.Raw(q, actor.Name, actor.Gender, actor.BirthDate).Scan(&id).Error; err != nil {
 
 		return -1, err
 	}
 
-	//if len(film.Actors) != 0 {
-	//	if err := p.AddActorsToFilms(ctx, id, film.Actors...); err != nil {
+	//if len(actor.Films) != 0 {
+	//	if err := p.AddActorsToFilms(ctx, id, actor.Films...); err != nil {
 	//		return -1, err
 	//	}
 	//}

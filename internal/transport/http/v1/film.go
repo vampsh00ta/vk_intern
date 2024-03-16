@@ -25,18 +25,12 @@ import (
 //}
 
 func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
-	var filmReq request.AddFilm
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	jwtToken := r.Header.Get("Authorization")
-	isAdmin, err := t.s.IsAdmin(r.Context(), jwtToken)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	if !isAdmin {
-		http.Error(w, "not admin", http.StatusUnauthorized)
-		return
-	}
+	var filmReq request.AddFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -59,18 +53,12 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.AddFilm{Id: id})
 }
 func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
-	var filmReq request.DeleteFilm
 
-	jwtToken := r.Header.Get("Authorization")
-	isAdmin, err := t.s.IsAdmin(r.Context(), jwtToken)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if !isAdmin {
-		http.Error(w, "not admin", http.StatusUnauthorized)
-		return
-	}
+	var filmReq request.DeleteFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -86,14 +74,8 @@ func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
 }
 func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	isAdmin, err := t.s.IsAdmin(r.Context(), jwtToken)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	if !isAdmin {
-		http.Error(w, "not admin", http.StatusUnauthorized)
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	var queryForm request.GetFilm
@@ -107,6 +89,7 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	queryForm.Title = r.URL.Query().Get("title")
 
 	var films []models.Film
+	var err error
 	if queryForm.Title != "" {
 		films, err = t.s.GetFilmsByTitle(r.Context(), queryForm.Title, queryForm.SortBy, queryForm.OrderBy)
 	} else if queryForm.Name != "" {
@@ -122,4 +105,71 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response.GetFilms{Films: films})
+}
+
+func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var filmReq request.UpdateFilm
+
+	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := validate.Struct(filmReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	film := models.Film{
+		ActorIds:    filmReq.Actors,
+		Title:       filmReq.Title,
+		Rating:      filmReq.Rating,
+		Description: filmReq.Description,
+		ReleaseDate: filmReq.ReleaseDate,
+		Id:          filmReq.Id,
+	}
+	if err := t.s.ChangeFilm(r.Context(), film); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+}
+func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var filmReq request.UpdateFilm
+
+	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := validate.Struct(filmReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	film := models.Film{
+		ActorIds:    filmReq.Actors,
+		Title:       filmReq.Title,
+		Rating:      filmReq.Rating,
+		Description: filmReq.Description,
+		ReleaseDate: filmReq.ReleaseDate,
+		Id:          filmReq.Id,
+	}
+	if err := t.s.ChangeFilmPartly(r.Context(), film); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
 }
