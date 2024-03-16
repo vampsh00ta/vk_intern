@@ -2,7 +2,7 @@ package v1
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/gorilla/schema"
 	"net/http"
 	"vk/internal/repository/models"
 	"vk/internal/transport/http/request"
@@ -96,19 +96,23 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "not admin", http.StatusUnauthorized)
 		return
 	}
-	var films []models.Film
-	query := r.URL.Query()
+	var queryForm request.GetFilm
+	if err := schema.NewDecoder().Decode(&queryForm, r.Form); err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	queryForm.SortBy = r.URL.Query().Get("sort_by")
+	queryForm.OrderBy = r.URL.Query().Get("order_by")
+	queryForm.Name = r.URL.Query().Get("name")
+	queryForm.Title = r.URL.Query().Get("title")
 
-	if query.Get("title") != "" {
-		films, err = t.s.GetFilmsByTitle(r.Context(), query.Get("title"))
-	} else if query.Get("name") != "" {
-		fmt.Println("111")
-		films, err = t.s.GetFilmsByActorName(r.Context(),
-			query.Get("name"),
-			query.Get("middlename"),
-			query.Get("surname"))
+	var films []models.Film
+	if queryForm.Title != "" {
+		films, err = t.s.GetFilmsByTitle(r.Context(), queryForm.Title, queryForm.SortBy, queryForm.OrderBy)
+	} else if queryForm.Name != "" {
+		films, err = t.s.GetFilmsByActorName(r.Context(), queryForm.Name, queryForm.SortBy, queryForm.OrderBy)
 	} else {
-		films, err = t.s.GetFilms(r.Context())
+		films, err = t.s.GetFilms(r.Context(), queryForm.SortBy, queryForm.OrderBy)
 
 	}
 	if err != nil {

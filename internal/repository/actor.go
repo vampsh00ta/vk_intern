@@ -8,21 +8,22 @@ import (
 type Actor interface {
 	AddActor(ctx context.Context, actor models.Actor) (int, error)
 	DeleteActorByID(ctx context.Context, actorId int) error
-	DeleteActorByFullName(ctx context.Context, name, middlename, surname string) error
+	DeleteActorByFullName(ctx context.Context, name string) error
 	ChangeActorByID(ctx context.Context, actor models.Actor) error
-	ChangeActorByFullName(ctx context.Context, name, middlename, surname string) error
+	ChangeActorByFullName(ctx context.Context, name string) error
 	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error
 
 	GetActorById(ctx context.Context, actorId int) (models.Actor, error)
-	GetActorByFullName(ctx context.Context, name, middlename, surname string) (models.Actor, error)
+	GetActorByFullName(ctx context.Context, name string) (models.Actor, error)
 	GetActors(ctx context.Context) ([]models.Actor, error)
 }
 
 func (p Pg) AddActor(ctx context.Context, actor models.Actor) (int, error) {
 	var id int
-	q := `insert into actor (  name ,surname , middlename  ,birth_date ) values($1,$2,$3,$4) returning id`
+	//q := `insert into actor (  name ,surname , middlename  ,birth_date ) values($1,$2,$3,$4) returning id`
+	q := `insert into actor (  name ,gender  ,birth_date ) values($1,$2,$3,$4) returning id`
 	tx := p.getTx(ctx)
-	if err := tx.Raw(q, actor.Name, actor.Surname, actor.Middlename, actor.BirthDate).Scan(&id).Error; err != nil {
+	if err := tx.Raw(q, actor.Name, actor.Gender, actor.BirthDate).Scan(&id).Error; err != nil {
 
 		return -1, err
 	}
@@ -40,7 +41,7 @@ func (p Pg) DeleteActorByID(ctx context.Context, actorId int) error {
 	panic("implement me")
 }
 
-func (p Pg) DeleteActorByFullName(ctx context.Context, name, middlename, surname string) error {
+func (p Pg) DeleteActorByFullName(ctx context.Context, name string) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -50,7 +51,7 @@ func (p Pg) ChangeActorByID(ctx context.Context, actor models.Actor) error {
 	panic("implement me")
 }
 
-func (p Pg) ChangeActorByFullName(ctx context.Context, name, middlename, surname string) error {
+func (p Pg) ChangeActorByFullName(ctx context.Context, name string) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -77,12 +78,12 @@ func (p Pg) GetActorById(ctx context.Context, filmId int) (models.Actor, error) 
 
 	return actor, nil
 }
-func (p Pg) GetActorByFullName(ctx context.Context, name, middlename, surname string) (models.Actor, error) {
+func (p Pg) GetActorByFullName(ctx context.Context, name string) (models.Actor, error) {
 	var actor models.Actor
 	tx := p.getTx(ctx)
 
 	err := tx.Model(&models.Actor{}).Preload("Films").
-		Where("name = ? and middlename = ? and surname = ?  ", name, middlename, surname).
+		Where("name = ?   ", name).
 		First(&actor).Error
 	if err != nil {
 		return models.Actor{}, err

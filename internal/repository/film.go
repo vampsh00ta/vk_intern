@@ -18,10 +18,9 @@ type Film interface {
 	AddActorsToFilms(ctx context.Context, filmId int, actor ...models.Actor) error
 
 	GetFilmById(ctx context.Context, filmId int) (models.Film, error)
-	GetFilmsByActorName(ctx context.Context, name, middlename, surname string) ([]models.Film, error)
-
-	GetFilmsByTitle(ctx context.Context, filmTitle string) ([]models.Film, error)
-	GetFilms(ctx context.Context) ([]models.Film, error)
+	GetFilmsByActorName(ctx context.Context, name string, sortBy, orderBy string) ([]models.Film, error)
+	GetFilmsByTitle(ctx context.Context, filmTitle string, sortBy, orderBy string) ([]models.Film, error)
+	GetFilms(ctx context.Context, sortBy, orderBy string) ([]models.Film, error)
 }
 
 func (p Pg) AddFilm(ctx context.Context, film models.Film) (int, error) {
@@ -116,12 +115,13 @@ func (p Pg) GetFilmById(ctx context.Context, filmId int) (models.Film, error) {
 
 	return film, nil
 }
-func (p Pg) GetFilmsByTitle(ctx context.Context, filmTitle string) ([]models.Film, error) {
+func (p Pg) GetFilmsByTitle(ctx context.Context, filmTitle string, sortBy, orderBy string) ([]models.Film, error) {
 	var films []models.Film
 	tx := p.getTx(ctx)
-
+	sortVal := sortStatement(sortBy, orderBy)
 	err := tx.Model(&models.Film{}).Preload("Actors").
 		Where("title like $1 ", "%"+filmTitle+"%").
+		Order(sortVal).
 		Find(&films).Error
 	if err != nil {
 		return nil, err
@@ -129,15 +129,15 @@ func (p Pg) GetFilmsByTitle(ctx context.Context, filmTitle string) ([]models.Fil
 	return films, nil
 
 }
-func (p Pg) GetFilmsByActorName(ctx context.Context, name, middlename, surname string) ([]models.Film, error) {
+func (p Pg) GetFilmsByActorName(ctx context.Context, name string, sortBy, orderBy string) ([]models.Film, error) {
 	var films []models.Film
 	tx := p.getTx(ctx)
 
 	err := tx.Model(&models.Film{}).
 		Joins("join actor_films on actor_films.film_id = film.id").
 		Joins("join actor on actor_films.actor_id = actor.id").
-		Where("actor.name like $1 and actor.middlename like $2 and actor.surname like $3",
-			"%"+name+"%", "%"+middlename+"%", "%"+surname+"%").
+		Where("actor.name like $1 ",
+			"%"+name+"%").
 		Preload("Actors").
 		Find(&films).
 		Error
@@ -147,11 +147,12 @@ func (p Pg) GetFilmsByActorName(ctx context.Context, name, middlename, surname s
 	return films, nil
 }
 
-func (p Pg) GetFilms(ctx context.Context) ([]models.Film, error) {
+func (p Pg) GetFilms(ctx context.Context, sortBy, orderBy string) ([]models.Film, error) {
 	var films []models.Film
 	tx := p.getTx(ctx)
+	sortVal := sortStatement(sortBy, orderBy)
 
-	err := tx.Model(&models.Film{}).Preload("Actors").Find(&films).Error
+	err := tx.Model(&models.Film{}).Preload("Actors").Order(sortVal).Find(&films).Error
 	if err != nil {
 		return nil, err
 	}
