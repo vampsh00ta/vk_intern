@@ -2,7 +2,6 @@ package request
 
 import (
 	"time"
-	"vk/internal/repository/models"
 )
 
 type AddFilm struct {
@@ -11,7 +10,7 @@ type AddFilm struct {
 	Rating      int       `json:"rating,omitempty" `
 	ReleaseDate time.Time `json:"release_date,omitempty"`
 	//Actors      []models.Id `json:"actors,omitempty" `
-	Actors []models.Actor `json:"actors,omitempty" `
+	Actors []int `json:"actors,omitempty" `
 	//
 	//models.Film
 }

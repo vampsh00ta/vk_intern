@@ -2,19 +2,21 @@ package repository
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 	"vk/internal/repository/models"
 )
 
 type Actor interface {
 	AddActor(ctx context.Context, actor models.Actor) (int, error)
+
 	DeleteActorByID(ctx context.Context, actorId int) error
 	DeleteActorByFullName(ctx context.Context, name string) error
+
 	ChangeActorByID(ctx context.Context, actor models.Actor) error
 	ChangeActorByFullName(ctx context.Context, name string) error
-	AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error
-	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error
-
-	//AddFilmsToActorById(ctx context.Context, actorId int, films ...models.Film) error
+	//ChangeActorFilms(ctx context.Context, actor int, filmIds ...int) error
+	ChangeActorByIDPartly(ctx context.Context, actor models.Actor) error
 
 	GetActorById(ctx context.Context, actorId int) (models.Actor, error)
 	GetActorByFullName(ctx context.Context, name string) (models.Actor, error)
@@ -32,14 +34,29 @@ func (p Pg) AddActor(ctx context.Context, actor models.Actor) (int, error) {
 		return -1, err
 	}
 
-	//if len(actor.Films) != 0 {
-	//	if err := p.AddActorsToFilms(ctx, id, actor.Films...); err != nil {
-	//		return -1, err
-	//	}
-	//}
+	if len(actor.FilmIds) != 0 {
+		if err := p.AddFilmsToActorByIds(ctx, id, actor.FilmIds...); err != nil {
+			return -1, err
+		}
+	}
 	return id, nil
 }
 
+func (p Pg) AddFilmsToActorByIds(ctx context.Context, actorId int, filmIds ...int) error {
+	q := `insert into actor_films ( actor_id ,film_id) values `
+	inputVals := []any{actorId}
+	tx := p.getTx(ctx)
+	for i, id := range filmIds {
+		q += fmt.Sprintf("($1,$%d),", i+2)
+		inputVals = append(inputVals, id)
+	}
+	q = q[0 : len(q)-1]
+	if err := tx.Raw(q, inputVals...).Scan(&actorId).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
 func (p Pg) DeleteActorByID(ctx context.Context, actorId int) error {
 	//TODO implement me
 	panic("implement me")
@@ -50,14 +67,89 @@ func (p Pg) DeleteActorByFullName(ctx context.Context, name string) error {
 	panic("implement me")
 }
 
-func (p Pg) ChangeActorByID(ctx context.Context, actor models.Actor) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (p Pg) ChangeActorByFullName(ctx context.Context, name string) error {
 	//TODO implement me
 	panic("implement me")
+}
+func (p Pg) ChangeActorFilms(ctx context.Context, actorId int, filmIds ...int) error {
+	tx := p.getTx(ctx)
+
+	q := `delete from  actor_films where actor_id = $1 `
+
+	if err := tx.Raw(q, actorId).Scan(&actorId).Error; err != nil {
+		return err
+	}
+
+	input := []any{actorId}
+
+	q = `insert into  actor_films ( actor_id ,film_id)  values `
+	for i, film := range filmIds {
+		q += fmt.Sprintf("($1,$%d),", i+2)
+		input = append(input, film)
+	}
+	q = q[:len(q)-1]
+	if err := tx.Raw(q, input...).Scan(&actorId).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (p Pg) ChangeActorByID(ctx context.Context, actor models.Actor) error {
+	q := `update actor set name = $2 ,  birth_date = $3, gender = $4 where id = $1`
+
+	tx := p.getTx(ctx)
+
+	if err := tx.Raw(q, actor.Id, actor.Name, actor.BirthDate, actor.Gender).
+		Scan(&actor.Id).Error; err != nil {
+
+		return err
+	}
+	if len(actor.FilmIds) > 0 {
+		if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (p Pg) ChangeActorByIDPartly(ctx context.Context, actor models.Actor) error {
+	q := `update actor  set `
+
+	tx := p.getTx(ctx)
+	count := 2
+	input := []any{actor.Id}
+	v := reflect.ValueOf(actor)
+	typ := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		fi := typ.Field(i)
+
+		if tagv := fi.Tag.Get("db"); tagv != "" && tagv != "id" {
+			if !v.Field(i).IsZero() {
+				q += fmt.Sprintf("%s  = $%d,", tagv, count)
+				input = append(input, v.Field(i).Interface())
+				count += 1
+
+			}
+
+		}
+	}
+	if count > 2 {
+		q = q[:len(q)-1] + " where id = $1"
+		if err := tx.Raw(q, input...).Scan(nil).Error; err != nil {
+
+			return err
+		}
+	}
+
+	if len(actor.FilmIds) > 0 {
+		if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
+			return err
+		}
+	}
+
+	return nil
+
 }
 
 func (p Pg) AddFilmsToActor(ctx context.Context, actorId int, films ...models.Film) error {

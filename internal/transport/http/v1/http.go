@@ -28,8 +28,8 @@ func NewTransport(t service.Service) *http.ServeMux {
 	mux.HandleFunc("GET /actor/all", r.GetActors)
 	mux.HandleFunc("POST /actor", r.AddActor)
 	mux.HandleFunc("DELETE /actor", r.DeleteActor)
-	//mux.HandleFunc("PUT /actor", r.UpdateActor)
-	//mux.HandleFunc("PATCH /actor", r.UpdateActor)
+	mux.HandleFunc("PUT /actor", r.UpdateActor)
+	mux.HandleFunc("PATCH /actor", r.UpdateActorPartly)
 
 	return mux
 	//h := handler.Group("/translation")

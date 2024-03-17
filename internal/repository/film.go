@@ -17,7 +17,6 @@ type Film interface {
 
 	ChangeFilmByID(ctx context.Context, film models.Film) error
 	ChangeFilmByIDPartly(ctx context.Context, film models.Film) error
-
 	ChangeFilmByFullName(ctx context.Context, filmId int) error
 
 	GetFilmById(ctx context.Context, filmId int) (models.Film, error)
@@ -37,7 +36,7 @@ func (p Pg) AddFilm(ctx context.Context, film models.Film) (int, error) {
 	fmt.Println(q)
 
 	if len(film.Actors) != 0 {
-		if err := p.AddActorsToFilms(ctx, id, film.Actors...); err != nil {
+		if err := p.AddActorsToFilmsByIds(ctx, id, film.ActorIds...); err != nil {
 			return -1, err
 		}
 	}
@@ -153,7 +152,21 @@ func (p Pg) ChangeFilmByFullName(ctx context.Context, filmId int) error {
 	//TODO implement me
 	panic("implement me")
 }
+func (p Pg) AddActorsToFilmsByIds(ctx context.Context, filmId int, actorIds ...int) error {
+	q := `insert into actor_films ( film_id,actor_id) values `
+	inputVals := []any{filmId}
+	tx := p.getTx(ctx)
+	for i, id := range actorIds {
+		q += fmt.Sprintf("($1,$%d),", i+2)
+		inputVals = append(inputVals, id)
+	}
+	q = q[0 : len(q)-1]
+	if err := tx.Raw(q, inputVals...).Scan(&filmId).Error; err != nil {
+		return err
+	}
 
+	return nil
+}
 func (p Pg) AddActorsToFilms(ctx context.Context, filmId int, actors ...models.Actor) error {
 	q := `insert into actor_films ( film_id,actor_id) values `
 	inputVals := []any{filmId}

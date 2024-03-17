@@ -24,7 +24,7 @@ func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
 		Name:      actorReq.Name,
 		Gender:    actorReq.Gender,
 		BirthDate: actorReq.BirthDate,
-		Films:     actorReq.Films,
+		FilmIds:   actorReq.Films,
 	}
 	id, err := t.s.AddActor(r.Context(), actor)
 	if err != nil {
@@ -73,4 +73,70 @@ func (t transport) GetActors(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response.GetActors{Actors: actors})
+}
+func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var actorReq request.UpdateActor
+
+	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := validate.Struct(actorReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	actor := models.Actor{
+		FilmIds:   actorReq.Films,
+		Name:      actorReq.Name,
+		Gender:    actorReq.Gender,
+		BirthDate: actorReq.BirthDate,
+
+		Id: actorReq.Id,
+	}
+	if err := t.s.ChangeActor(r.Context(), actor); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+}
+func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
+	if err := t.adminPermission(w, r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var actorReq request.UpdateActor
+
+	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := validate.Struct(actorReq); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	actor := models.Actor{
+		FilmIds:   actorReq.Films,
+		Name:      actorReq.Name,
+		Gender:    actorReq.Gender,
+		BirthDate: actorReq.BirthDate,
+
+		Id: actorReq.Id,
+	}
+	if err := t.s.ChangeActorPartly(r.Context(), actor); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
 }

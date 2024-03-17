@@ -37,7 +37,7 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	film := models.Film{
-		Actors:      filmReq.Actors,
+		ActorIds:    filmReq.Actors,
 		Title:       filmReq.Title,
 		Rating:      filmReq.Rating,
 		Description: filmReq.Description,
