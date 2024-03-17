@@ -8,19 +8,23 @@ import (
 )
 
 func (t transport) Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "Login"
 	var customer request.Customer
 
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	jwtToken, err := t.s.Login(r.Context(), customer.Username)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response.Login{Access: jwtToken})
+	t.handleOk(w, response.Login{Access: jwtToken}, methodName, http.StatusOK)
+
 }

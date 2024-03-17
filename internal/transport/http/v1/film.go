@@ -25,15 +25,21 @@ import (
 //}
 
 func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "AddFilm"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 
 	var filmReq request.AddFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 	film := models.Film{
@@ -45,42 +51,48 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := t.s.AddFilm(r.Context(), film)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.AddFilm{Id: id}, methodName, http.StatusCreated)
+
 }
 func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "DeleteFilm"
 
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	var filmReq request.DeleteFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
 	if err := t.s.DeleteFilm(r.Context(), filmReq.Id); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }
 func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
-	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "GetFilms"
+
 	var queryForm request.GetFilm
 	if err := schema.NewDecoder().Decode(&queryForm, r.Form); err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	queryForm.SortBy = r.URL.Query().Get("sort_by")
@@ -99,28 +111,35 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 
 	}
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response.GetFilms{Films: films})
+	t.handleOk(w, response.GetFilms{Films: films}, methodName, http.StatusOK)
+
 }
 
 func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "UpdateFilm"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	var filmReq request.UpdateFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
 	if err := validate.Struct(filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
@@ -133,27 +152,34 @@ func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 		Id:          filmReq.Id,
 	}
 	if err := t.s.ChangeFilm(r.Context(), film); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }
 func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "UpdateFilmPartly"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	var filmReq request.UpdateFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
 	if err := validate.Struct(filmReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
@@ -166,10 +192,11 @@ func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
 		Id:          filmReq.Id,
 	}
 	if err := t.s.ChangeFilmPartly(r.Context(), film); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }

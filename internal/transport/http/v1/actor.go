@@ -9,15 +9,19 @@ import (
 )
 
 func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "AddActor"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
 		return
 	}
 
 	var actorReq request.AddActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
 		return
 	}
 	actor := models.Actor{
@@ -28,66 +32,72 @@ func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := t.s.AddActor(r.Context(), actor)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response.AddActor{Id: id})
+
+	t.handleOk(w, response.AddActor{Id: id}, methodName, http.StatusCreated)
+
 }
 func (t transport) DeleteActor(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "DeleteActor"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
 		return
 	}
 
 	var acrorReq request.DeleteActor
 
 	if err := json.NewDecoder(r.Body).Decode(&acrorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
 		return
 	}
 
 	if err := t.s.DeleteActorByID(r.Context(), acrorReq.Id); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }
 func (t transport) GetActors(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
-	//var actorReq request.GetActors
-	//
-	//if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-	//	http.Error(w, err.Error(), http.StatusBadRequest)
-	//	return
-	//}
+	methodName := "GetActors"
 
 	actors, err := t.s.GetActors(r.Context())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response.GetActors{Actors: actors})
+	t.handleOk(w, response.GetActors{Actors: actors}, methodName, http.StatusOK)
+
 }
 func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "UpdateActor"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	var actorReq request.UpdateActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
+		//http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err := validate.Struct(actorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
@@ -100,27 +110,34 @@ func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
 		Id: actorReq.Id,
 	}
 	if err := t.s.ChangeActor(r.Context(), actor); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }
 func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	methodName := "UpdateActorPartly"
+
 	if err := t.adminPermission(w, r); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+
 		return
 	}
 	var actorReq request.UpdateActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
 	if err := validate.Struct(actorReq); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		t.handleError(w, err, methodName, http.StatusBadRequest)
+
 		return
 	}
 
@@ -133,10 +150,10 @@ func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
 		Id: actorReq.Id,
 	}
 	if err := t.s.ChangeActorPartly(r.Context(), actor); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		t.handleError(w, err, methodName, http.StatusInternalServerError)
+
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	//json.NewEncoder(w).Encode(response.AddFilm{Id: id})
+	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
+
 }

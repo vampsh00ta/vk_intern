@@ -3,6 +3,7 @@ package vk
 import (
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlog "gorm.io/gorm/logger"
@@ -48,7 +49,10 @@ func Run(cfg *config.Config) {
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
-	t := v1.NewTransport(srvc)
+	logger, _ := zap.NewProduction()
+	defer logger.Sync() // flushes buffer, if any
+	sugar := logger.Sugar()
+	t := v1.NewTransport(srvc, sugar)
 
 	log.Print("Listening...")
 	http.ListenAndServe(":8000", t)

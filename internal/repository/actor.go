@@ -58,8 +58,15 @@ func (p Pg) AddFilmsToActorByIds(ctx context.Context, actorId int, filmIds ...in
 	return nil
 }
 func (p Pg) DeleteActorByID(ctx context.Context, actorId int) error {
-	//TODO implement me
-	panic("implement me")
+	q := `delete from actor where id = $1 `
+	tx := p.getTx(ctx)
+
+	if err := tx.Raw(q, actorId).Scan(&actorId).Error; err != nil {
+
+		return err
+	}
+
+	return nil
 }
 
 func (p Pg) DeleteActorByFullName(ctx context.Context, name string) error {

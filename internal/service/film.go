@@ -7,6 +7,7 @@ import (
 
 type Film interface {
 	AddFilm(ctx context.Context, film models.Film) (int, error)
+
 	DeleteFilm(ctx context.Context, id int) error
 
 	ChangeFilm(ctx context.Context, film models.Film) error

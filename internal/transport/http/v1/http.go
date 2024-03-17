@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 	"net/http"
 	"vk/internal/service"
 )
@@ -10,11 +11,11 @@ var validate = validator.New(validator.WithRequiredStructEnabled())
 
 type transport struct {
 	s service.Service
-	//l logger.Interface
+	l *zap.SugaredLogger
 }
 
-func NewTransport(t service.Service) *http.ServeMux {
-	r := &transport{t}
+func NewTransport(t service.Service, l *zap.SugaredLogger) *http.ServeMux {
+	r := &transport{t, l}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("POST /login", r.Login)
