@@ -48,6 +48,7 @@ func (s service) IsAuthorized(requestToken string) (bool, error) {
 }
 func (s service) ExtractCustomerFromToken(requestToken string) (*JwtCustomClaim, error) {
 	splited := strings.Split(requestToken, " ")
+	fmt.Println(splited)
 	if len(splited) != 2 || splited[0] != "Bearer" {
 		return nil, fmt.Errorf("Invalid Token")
 	}

@@ -34,6 +34,19 @@ func (t transport) adminPermission(w http.ResponseWriter, r *http.Request) error
 	}
 	return nil
 }
+func (t transport) userPermission(w http.ResponseWriter, r *http.Request) error {
+	jwtToken := r.Header.Get("Authorization")
+	fmt.Println(jwtToken)
+	res, err := t.s.IsLogged(r.Context(), jwtToken)
+
+	if err != nil {
+		return err
+	}
+	if !res {
+		return fmt.Errorf("unlogged")
+	}
+	return nil
+}
 
 func (t transport) handleError(w http.ResponseWriter, err error, method string, status int) {
 	w.WriteHeader(status)

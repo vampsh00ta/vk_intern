@@ -2,6 +2,7 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/schema"
 	"net/http"
 	"vk/internal/repository/models"
@@ -24,6 +25,18 @@ import (
 //	fmt.Fprintf(w, "Person: %+v", p)
 //}
 
+// @Summary     Add
+// @Description Добавляет фильм
+// @Tags        Film
+// @Accept      json
+// @Param data body request.AddFilm true "Модель запроса"
+// @Produce     json
+// @Success     201 {object} response.AddFilm
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Security ApiKeyAuth
+// @Router      /film/add [post]
 func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -58,6 +71,19 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	t.handleOk(w, response.AddFilm{Id: id}, methodName, http.StatusCreated)
 
 }
+
+// @Summary     Delete
+// @Description Удаляет фильм
+// @Tags        Film
+// @Accept      json
+// @Param data body request.DeleteFilm true "Модель запроса"
+// @Produce     json
+// @Success     201 {object} response.Ok
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Security ApiKeyAuth
+// @Router      /film [delete]
 func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -84,11 +110,26 @@ func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
 
 }
+
+// @Summary     Get
+// @Description Возвращает фильмы
+// @Tags        Film
+// @Accept      json
+// @Produce     json
+// @Success     200 {object} response.GetFilms
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Security ApiKeyAuth
+// @Router      /film [get]
 func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	methodName := "GetFilms"
-
+	if err := t.userPermission(w, r); err != nil {
+		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		return
+	}
 	var queryForm request.GetFilm
 	if err := schema.NewDecoder().Decode(&queryForm, r.Form); err != nil {
 		t.handleError(w, err, methodName, http.StatusUnauthorized)
@@ -99,7 +140,7 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	queryForm.OrderBy = r.URL.Query().Get("order_by")
 	queryForm.Name = r.URL.Query().Get("name")
 	queryForm.Title = r.URL.Query().Get("title")
-
+	fmt.Print(queryForm)
 	var films []models.Film
 	var err error
 	if queryForm.Title != "" {
@@ -119,6 +160,17 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary     Update
+// @Description Полностью изменяет фильмы
+// @Tags        Film
+// @Accept      json
+// @Produce     json
+// @Success     201 {object} response.Ok
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Security ApiKeyAuth
+// @Router      /film [put]
 func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -159,6 +211,18 @@ func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
 
 }
+
+// @Summary     UpdatePartly
+// @Description Частично изменяет фильмы
+// @Tags        Film
+// @Accept      json
+// @Produce     json
+// @Success     201 {object} response.Ok
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Security ApiKeyAuth
+// @Router      /film [patch]
 func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

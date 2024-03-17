@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 )
 
 type Auth interface {
@@ -23,11 +24,12 @@ func (s service) Login(ctx context.Context, username string) (string, error) {
 	return jwtToken, nil
 }
 func (s service) IsLogged(ctx context.Context, token string) (bool, error) {
-	res, err := s.IsAuthorized(token)
+	res, err := s.ExtractCustomerFromToken(token)
 	if err != nil {
 		return false, err
 	}
-	return res, nil
+	fmt.Print(res)
+	return true, nil
 }
 func (s service) IsAdmin(ctx context.Context, token string) (bool, error) {
 	customer, err := s.ExtractCustomerFromToken(token)

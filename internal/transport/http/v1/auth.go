@@ -7,6 +7,17 @@ import (
 	"vk/internal/transport/http/response"
 )
 
+// @Summary     GetAccessToken
+// @Description Возвращает jwt токен. В базе есть 2 пользователя : admin и notadmin с соотвествующими правами.
+// @Tags        Login
+// @Accept      json
+// @Param data body request.Customer true "Модель запроса"
+// @Produce     json
+// @Success     201 {object} response.Login
+// @Failure     400 {object} response.Error
+// @Failure     404 {object} response.Error
+// @Failure     500 {object} response.Error
+// @Router      /login [post]
 func (t transport) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

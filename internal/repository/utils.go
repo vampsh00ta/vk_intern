@@ -3,7 +3,6 @@ package repository
 func sortStatement(sortBy, orderBy string) string {
 	var sortVal string
 	sortVal = sortBy
-
 	if sortVal == "" {
 		sortVal = "rating"
 	}

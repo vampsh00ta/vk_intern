@@ -56,6 +56,7 @@ func Run(cfg *config.Config) {
 
 	log.Print("Listening...")
 	http.ListenAndServe(":8000", t)
+
 	select {
 	case <-interrupt:
 		panic("exit")
