@@ -19,6 +19,7 @@ type Film interface {
 	ChangeFilmByIDPartly(ctx context.Context, film models.Film) error
 	ChangeFilmByFullName(ctx context.Context, filmId int) error
 
+	GetFilmsByParams(ctx context.Context, params models.SortParams) ([]models.Film, error)
 	GetFilmById(ctx context.Context, filmId int) (models.Film, error)
 	GetFilmsByActorName(ctx context.Context, name string, sortBy, orderBy string) ([]models.Film, error)
 	GetFilmsByTitle(ctx context.Context, filmTitle string, sortBy, orderBy string) ([]models.Film, error)
@@ -33,9 +34,8 @@ func (p Pg) AddFilm(ctx context.Context, film models.Film) (int, error) {
 
 		return -1, err
 	}
-	fmt.Println(q)
 
-	if len(film.Actors) != 0 {
+	if len(film.ActorIds) != 0 {
 		if err := p.AddActorsToFilmsByIds(ctx, id, film.ActorIds...); err != nil {
 			return -1, err
 		}
@@ -161,6 +161,8 @@ func (p Pg) AddActorsToFilmsByIds(ctx context.Context, filmId int, actorIds ...i
 		inputVals = append(inputVals, id)
 	}
 	q = q[0 : len(q)-1]
+	fmt.Println(q)
+
 	if err := tx.Raw(q, inputVals...).Scan(&filmId).Error; err != nil {
 		return err
 	}
@@ -227,6 +229,27 @@ func (p Pg) GetFilmsByActorName(ctx context.Context, name string, sortBy, orderB
 		Find(&films).
 		Error
 	if err != nil {
+		return nil, err
+	}
+	return films, nil
+}
+func (p Pg) GetFilmsByParams(ctx context.Context, params models.SortParams) ([]models.Film, error) {
+	var films []models.Film
+	tx := p.getTx(ctx)
+	if params.ActorName != "" {
+		tx = tx.Model(&models.Film{}).
+			Joins("join actor_films on actor_films.film_id = film.id").
+			Joins("join (select * from actor where name like  (?)) as actor on actor_films.actor_id = actor.id", "%"+params.ActorName+"%").
+			Where("film.title like (?)", "%"+params.Title+"%").
+			Preload("Actors")
+	} else if params.Title != "" {
+		tx = tx.Model(&models.Film{}).Preload("Actors").
+			Where("title like $1 ", "%"+params.Title+"%")
+	}
+
+	sortVal := sortStatement(params.SortBy, params.OrderBy)
+
+	if err := tx.Order(sortVal).Find(&films).Error; err != nil {
 		return nil, err
 	}
 	return films, nil
