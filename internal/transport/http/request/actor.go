@@ -12,14 +12,19 @@ type AddActor struct {
 }
 type UpdateActor struct {
 	Id        int       `json:"id"  example:"1"  validate:"required"`
-	Name      string    `json:"name" example:"ivan"`
+	Name      string    `json:"name" example:"ivan" `
 	Gender    string    `json:"gender" example:"female" validate:"oneof=male female"`
+	BirthDate time.Time `json:"birth_date" example:"2006-01-02T15:04:05Z" `
+	Films     []int     `json:"films,omitempty"example:"1,2"`
+}
+
+type UpdateActorPartly struct {
+	Id        int       `json:"id"  example:"1"  validate:"required"`
+	Name      string    `json:"name" example:"ivan"`
+	Gender    string    `json:"gender" example:"female" validate:"omitempty,oneof=male female"`
 	BirthDate time.Time `json:"birth_date" example:"2006-01-02T15:04:05Z" `
 	Films     []int     `json:"films,omitempty"example:"1,2"`
 }
 type DeleteActor struct {
 	Id int `json:"id" example:"1" validate:"required"`
-}
-
-type GetActors struct {
 }

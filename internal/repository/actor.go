@@ -87,17 +87,20 @@ func (p Pg) ChangeActorFilms(ctx context.Context, actorId int, filmIds ...int) e
 		return err
 	}
 
-	input := []any{actorId}
+	if len(filmIds) > 0 {
+		input := []any{actorId}
 
-	q = `insert into  actor_films ( actor_id ,film_id)  values `
-	for i, film := range filmIds {
-		q += fmt.Sprintf("($1,$%d),", i+2)
-		input = append(input, film)
+		q = `insert into  actor_films ( actor_id ,film_id)  values `
+		for i, film := range filmIds {
+			q += fmt.Sprintf("($1,$%d),", i+2)
+			input = append(input, film)
+		}
+		q = q[:len(q)-1]
+		if err := tx.Raw(q, input...).Scan(&actorId).Error; err != nil {
+			return err
+		}
 	}
-	q = q[:len(q)-1]
-	if err := tx.Raw(q, input...).Scan(&actorId).Error; err != nil {
-		return err
-	}
+
 	return nil
 
 }
@@ -112,10 +115,8 @@ func (p Pg) ChangeActorByID(ctx context.Context, actor models.Actor) error {
 
 		return err
 	}
-	if len(actor.FilmIds) > 0 {
-		if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
-			return err
-		}
+	if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
+		return err
 	}
 	return nil
 }
@@ -149,10 +150,8 @@ func (p Pg) ChangeActorByIDPartly(ctx context.Context, actor models.Actor) error
 		}
 	}
 
-	if len(actor.FilmIds) > 0 {
-		if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
-			return err
-		}
+	if err := p.ChangeActorFilms(ctx, actor.Id, actor.FilmIds...); err != nil {
+		return err
 	}
 
 	return nil

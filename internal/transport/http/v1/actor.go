@@ -184,7 +184,7 @@ func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
 // @Description Частично изменяет актера
 // @Tags        Actor
 // @Accept      json
-// @Param data body request.UpdateActor true "Модель запроса"
+// @Param data body request.UpdateActorPartly true "Модель запроса"
 // @Produce     json
 // @Success     201 {object} response.Ok
 // @Failure     400 {object} response.Error
@@ -202,7 +202,7 @@ func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-	var actorReq request.UpdateActor
+	var actorReq request.UpdateActorPartly
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
 		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)

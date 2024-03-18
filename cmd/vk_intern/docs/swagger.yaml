@@ -142,6 +142,97 @@ definitions:
     required:
     - id
     type: object
+  request.UpdateActorPartly:
+    properties:
+      birth_date:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      films:
+        example:
+        - 1
+        - 2
+        items:
+          type: integer
+        type: array
+      gender:
+        enum:
+        - male
+        - female
+        example: female
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: ivan
+        type: string
+    required:
+    - id
+    type: object
+  request.UpdateFilm:
+    properties:
+      actors:
+        example:
+        - 1
+        - 2
+        items:
+          type: integer
+        type: array
+      description:
+        example: test
+        maxLength: 1000
+        type: string
+      id:
+        example: 1
+        type: integer
+      rating:
+        example: 10
+        maximum: 10
+        minimum: 0
+        type: integer
+      release_date:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      title:
+        example: test
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    type: object
+  request.UpdateFilmPartly:
+    properties:
+      actors:
+        example:
+        - 1
+        - 2
+        items:
+          type: integer
+        type: array
+      description:
+        example: test
+        maxLength: 1000
+        type: string
+      id:
+        example: 1
+        type: integer
+      rating:
+        example: 10
+        maximum: 10
+        minimum: 0
+        type: integer
+      release_date:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      title:
+        example: test
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - id
+    type: object
   response.AddFilm:
     properties:
       id:
@@ -229,7 +320,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.UpdateActor'
+          $ref: '#/definitions/request.UpdateActorPartly'
       produces:
       - application/json
       responses:
@@ -395,6 +486,13 @@ paths:
       consumes:
       - application/json
       description: Частично изменяет фильмы
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateFilmPartly'
       produces:
       - application/json
       responses:
@@ -423,6 +521,13 @@ paths:
       consumes:
       - application/json
       description: Полностью изменяет фильмы
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateFilm'
       produces:
       - application/json
       responses:

@@ -63,7 +63,7 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	}
 	film := models.Film{
 		ActorIds:    filmReq.Actors,
-		Title:       filmReq.Title,
+		Title:       *filmReq.Title,
 		Rating:      filmReq.Rating,
 		Description: filmReq.Description,
 		ReleaseDate: filmReq.ReleaseDate,
@@ -180,6 +180,7 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 // @Tags        Film
 // @Accept      json
 // @Produce     json
+// @Param data body request.UpdateFilm true "Модель запроса"
 // @Success     201 {object} response.Ok
 // @Failure     400 {object} response.Error
 // @Failure     404 {object} response.Error
@@ -232,6 +233,7 @@ func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 // @Tags        Film
 // @Accept      json
 // @Produce     json
+// @Param data body request.UpdateFilmPartly true "Модель запроса"
 // @Success     201 {object} response.Ok
 // @Failure     400 {object} response.Error
 // @Failure     404 {object} response.Error
@@ -248,7 +250,7 @@ func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-	var filmReq request.UpdateFilm
+	var filmReq request.UpdateFilmPartly
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
 		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)

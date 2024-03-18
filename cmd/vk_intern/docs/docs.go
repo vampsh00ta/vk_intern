@@ -151,7 +151,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.UpdateActor"
+                            "$ref": "#/definitions/request.UpdateActorPartly"
                         }
                     }
                 ],
@@ -304,6 +304,17 @@ const docTemplate = `{
                     "Film"
                 ],
                 "summary": "Update",
+                "parameters": [
+                    {
+                        "description": "Модель запроса",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateFilm"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -403,6 +414,17 @@ const docTemplate = `{
                     "Film"
                 ],
                 "summary": "UpdatePartly",
+                "parameters": [
+                    {
+                        "description": "Модель запроса",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateFilmPartly"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -811,6 +833,130 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "ivan"
+                }
+            }
+        },
+        "request.UpdateActorPartly": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "films": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ],
+                    "example": "female"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ivan"
+                }
+            }
+        },
+        "request.UpdateFilm": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "actors": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "test"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "rating": {
+                    "type": "integer",
+                    "maximum": 10,
+                    "minimum": 0,
+                    "example": 10
+                },
+                "release_date": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "test"
+                }
+            }
+        },
+        "request.UpdateFilmPartly": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "actors": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "test"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "rating": {
+                    "type": "integer",
+                    "maximum": 10,
+                    "minimum": 0,
+                    "example": 10
+                },
+                "release_date": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "example": "test"
                 }
             }
         },
