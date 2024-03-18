@@ -6,20 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="35d11b05-36cd-4cd2-88fb-d4703881a29a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/vk_intern/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/repository/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/utils.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/auth.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/request/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/actor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/film.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/auth.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/film.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/http.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/utils.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +29,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Go File" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
@@ -51,6 +51,25 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
+    "Go Test.TestFilm_AddActor in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_AddActor/ok in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_AddFilm in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_AddFilm/OK in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_ChanegeFilm/not_admin_err in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_ChangeFilm in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_DeleteActor in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_DeleteFilm in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_DeleteFilm/ok in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms/ok__actor in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms/ok_title_search in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms/ok_title_sort/order_by in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_UpdateActor in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_UpdateActorPartly in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_UpdateFilm in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_UpdateFilmPartly in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_UpdateFilmPartly/validation_err_rating_greatere_than_10 in vk/internal/transport/http/v1/tests.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -60,7 +79,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/Users/vladislavtrofimov/GolandProjects/vk",
+    "last_opened_file_path": "/Users/vladislavtrofimov/GolandProjects/vk/internal/transport/http/v1/tests",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -69,6 +88,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/transport/http/v1/tests" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -77,16 +97,74 @@
       <recent name="$PROJECT_DIR$/internal/service/jwt" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="migrate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="migrate" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
+  <component name="RunManager" selected="Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests">
+    <configuration name="TestFilm_DeleteActor in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_DeleteActor\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFilm_GetActors in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_GetActors\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFilm_UpdateActor in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_UpdateActor\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFilm_UpdateActorPartly in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_UpdateActorPartly\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFilm_UpdateFilmPartly in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_UpdateFilmPartly\E$" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Makefile Target.migrate" />
+        <item itemvalue="Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_DeleteActor in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_UpdateFilmPartly in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_UpdateActorPartly in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_UpdateActor in vk/internal/transport/http/v1/tests" />
       </list>
     </recent_temporary>
   </component>
@@ -111,6 +189,21 @@
           <url>file://$PROJECT_DIR$/internal/repository/repository.go</url>
           <line>18</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/transport/http/v1/tests/film_test.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/transport/http/v1/tests/film_test.go</url>
+          <line>511</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/transport/http/v1/tests/actor_test.go</url>
+          <line>130</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

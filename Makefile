@@ -4,3 +4,5 @@ migrate:
 migration:
 	migrate -path ./migrations -database  $(DATABASE)  up
 
+http-tests:
+	go test ./internal/transport/http/v1/tests

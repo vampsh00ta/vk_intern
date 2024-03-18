@@ -6,8 +6,8 @@ import (
 )
 
 type Service interface {
-	Auth
 	Film
+	Auth
 	Actor
 }
 type service struct {

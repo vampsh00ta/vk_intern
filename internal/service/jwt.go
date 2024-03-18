@@ -5,6 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"strings"
 	"time"
+	"vk/internal/errs"
 	"vk/internal/repository/models"
 )
 
@@ -32,7 +33,7 @@ func (s service) CreateAccessToken(customer models.Customer, expiry int) (access
 func (s service) IsAuthorized(requestToken string) (bool, error) {
 	splited := strings.Split(requestToken, " ")
 	if len(splited) != 2 || splited[0] != "Bearer" {
-		return false, fmt.Errorf("Invalid Token")
+		return false, fmt.Errorf(errs.InvalidToken)
 	}
 	requestToken = splited[1]
 	_, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
@@ -46,18 +47,21 @@ func (s service) IsAuthorized(requestToken string) (bool, error) {
 	}
 	return true, nil
 }
-func (s service) ExtractCustomerFromToken(requestToken string) (*JwtCustomClaim, error) {
+func extractCustomerFromToken(requestToken, secret string) (*JwtCustomClaim, error) {
+	if requestToken == "" {
+		return nil, fmt.Errorf(errs.NotLogged)
+	}
 	splited := strings.Split(requestToken, " ")
 	fmt.Println(splited)
 	if len(splited) != 2 || splited[0] != "Bearer" {
-		return nil, fmt.Errorf("Invalid Token")
+		return nil, fmt.Errorf(errs.InvalidToken)
 	}
 	requestToken = splited[1]
 	token, err := jwt.ParseWithClaims(requestToken, &JwtCustomClaim{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(s.cfg.Secret), nil
+		return []byte(secret), nil
 	})
 
 	if err != nil {
@@ -66,7 +70,7 @@ func (s service) ExtractCustomerFromToken(requestToken string) (*JwtCustomClaim,
 
 	claims, ok := token.Claims.(*JwtCustomClaim)
 	if !ok && !token.Valid {
-		return nil, fmt.Errorf("Invalid Token")
+		return nil, fmt.Errorf(errs.InvalidToken)
 	}
 	return claims, nil
 }

@@ -2,8 +2,10 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	_ "vk/cmd/vk_intern/docs"
+	"vk/internal/errs"
 	"vk/internal/repository/models"
 	"vk/internal/transport/http/request"
 	"vk/internal/transport/http/response"
@@ -27,14 +29,20 @@ func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
 	methodName := "AddActor"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 		return
 	}
 
 	var actorReq request.AddActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
+		return
+	}
+
+	if err := validate.Struct(actorReq); err != nil {
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
+
 		return
 	}
 	actor := models.Actor{
@@ -45,7 +53,7 @@ func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := t.s.AddActor(r.Context(), actor)
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 		return
 	}
 
@@ -71,19 +79,19 @@ func (t transport) DeleteActor(w http.ResponseWriter, r *http.Request) {
 	methodName := "DeleteActor"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 		return
 	}
 
 	var acrorReq request.DeleteActor
 
 	if err := json.NewDecoder(r.Body).Decode(&acrorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 		return
 	}
 
 	if err := t.s.DeleteActorByID(r.Context(), acrorReq.Id); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 		return
 	}
 	t.handleOk(w, response.Ok{Status: "ok"}, methodName, http.StatusCreated)
@@ -107,12 +115,12 @@ func (t transport) GetActors(w http.ResponseWriter, r *http.Request) {
 	methodName := "GetActors"
 
 	if err := t.userPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 		return
 	}
 	actors, err := t.s.GetActors(r.Context())
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 		return
 	}
 	t.handleOk(w, response.GetActors{Actors: actors}, methodName, http.StatusOK)
@@ -137,21 +145,21 @@ func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
 	methodName := "UpdateActor"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	var actorReq request.UpdateActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		//http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err := validate.Struct(actorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
@@ -165,7 +173,7 @@ func (t transport) UpdateActor(w http.ResponseWriter, r *http.Request) {
 		Id: actorReq.Id,
 	}
 	if err := t.s.ChangeActor(r.Context(), actor); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}
@@ -191,20 +199,20 @@ func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
 	methodName := "UpdateActorPartly"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	var actorReq request.UpdateActor
 
 	if err := json.NewDecoder(r.Body).Decode(&actorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
 
 	if err := validate.Struct(actorReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
@@ -214,11 +222,10 @@ func (t transport) UpdateActorPartly(w http.ResponseWriter, r *http.Request) {
 		Name:      actorReq.Name,
 		Gender:    actorReq.Gender,
 		BirthDate: actorReq.BirthDate,
-
-		Id: actorReq.Id,
+		Id:        actorReq.Id,
 	}
 	if err := t.s.ChangeActorPartly(r.Context(), actor); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}

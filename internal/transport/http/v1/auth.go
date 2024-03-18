@@ -2,7 +2,9 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"vk/internal/errs"
 	"vk/internal/transport/http/request"
 	"vk/internal/transport/http/response"
 )
@@ -26,13 +28,13 @@ func (t transport) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	jwtToken, err := t.s.Login(r.Context(), customer.Username)
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}

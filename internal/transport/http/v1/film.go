@@ -3,8 +3,8 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/schema"
 	"net/http"
+	"vk/internal/errs"
 	"vk/internal/repository/models"
 	"vk/internal/transport/http/request"
 	"vk/internal/transport/http/response"
@@ -43,7 +43,7 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	methodName := "AddFilm"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
@@ -51,7 +51,13 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	var filmReq request.AddFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
+
+		return
+	}
+
+	if err := validate.Struct(filmReq); err != nil {
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
@@ -64,7 +70,7 @@ func (t transport) AddFilm(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := t.s.AddFilm(r.Context(), film)
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}
@@ -90,20 +96,20 @@ func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	methodName := "DeleteFilm"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	var filmReq request.DeleteFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
 
 	if err := t.s.DeleteFilm(r.Context(), filmReq.Id); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}
@@ -127,20 +133,19 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 
 	methodName := "GetFilms"
 	if err := t.userPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 		return
 	}
 	var queryForm request.GetFilm
-	if err := schema.NewDecoder().Decode(&queryForm, r.Form); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
-
-		return
-	}
+	//if err := schema.NewDecoder().Decode(&queryForm, r.Form); err != nil {
+	//	t.handleError(w, err, methodName, http.StatusBadRequest)
+	//
+	//	return
+	//}
 	queryForm.SortBy = r.URL.Query().Get("sort_by")
 	queryForm.OrderBy = r.URL.Query().Get("order_by")
 	queryForm.Name = r.URL.Query().Get("name")
 	queryForm.Title = r.URL.Query().Get("title")
-	fmt.Print(queryForm)
 	var films []models.Film
 	var err error
 	if queryForm.Title != "" {
@@ -152,7 +157,7 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 
 	}
 	if err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}
@@ -177,20 +182,20 @@ func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	methodName := "UpdateFilm"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	var filmReq request.UpdateFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
 
 	if err := validate.Struct(filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
@@ -204,7 +209,7 @@ func (t transport) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 		Id:          filmReq.Id,
 	}
 	if err := t.s.ChangeFilm(r.Context(), film); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}
@@ -229,20 +234,20 @@ func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
 	methodName := "UpdateFilmPartly"
 
 	if err := t.adminPermission(w, r); err != nil {
-		t.handleError(w, err, methodName, http.StatusUnauthorized)
+		t.handleError(w, err, handleErrorAuth(err), methodName, http.StatusUnauthorized)
 
 		return
 	}
 	var filmReq request.UpdateFilm
 
 	if err := json.NewDecoder(r.Body).Decode(&filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
 
 	if err := validate.Struct(filmReq); err != nil {
-		t.handleError(w, err, methodName, http.StatusBadRequest)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
@@ -256,7 +261,7 @@ func (t transport) UpdateFilmPartly(w http.ResponseWriter, r *http.Request) {
 		Id:          filmReq.Id,
 	}
 	if err := t.s.ChangeFilmPartly(r.Context(), film); err != nil {
-		t.handleError(w, err, methodName, http.StatusInternalServerError)
+		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
 
 		return
 	}

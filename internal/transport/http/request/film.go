@@ -5,9 +5,9 @@ import (
 )
 
 type AddFilm struct {
-	Title       string    `json:"title,omitempty" `
-	Description string    `json:"description,omitempty" `
-	Rating      int       `json:"rating,omitempty" `
+	Title       string    `json:"title,omitempty" validate:"min=1,max=150,required"`
+	Description string    `json:"description,omitempty" validate:"max=1000,required"`
+	Rating      int       `json:"rating,omitempty" validate:"gte=0,lte=10"`
 	ReleaseDate time.Time `json:"release_date,omitempty"`
 	//Actors      []models.Id `json:"actors,omitempty" `
 	Actors []int `json:"actors,omitempty" `
@@ -22,9 +22,9 @@ type GetFilm struct {
 }
 type UpdateFilm struct {
 	Id          int       `json:"id"  validate:"required"`
-	Title       string    `json:"title,omitempty" `
-	Description string    `json:"description,omitempty" `
-	Rating      int       `json:"rating,omitempty" `
+	Title       string    `json:"title,omitempty" validate:"min=1,max=150"`
+	Description string    `json:"description,omitempty" validate:"max=1000"`
+	Rating      int       `json:"rating,omitempty" validate:"gte=0,lte=10"`
 	ReleaseDate time.Time `json:"release_date,omitempty"`
 	Actors      []int     `json:"actors,omitempty" `
 }
