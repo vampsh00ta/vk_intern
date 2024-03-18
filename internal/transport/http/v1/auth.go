@@ -28,13 +28,22 @@ func (t transport) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	if err != nil {
-		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusUnauthorized)
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
+
+		return
+	}
+	if err := validate.Struct(customer); err != nil {
+		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
 
 		return
 	}
 	jwtToken, err := t.s.Login(r.Context(), customer.Username)
 	if err != nil {
-		t.handleError(w, err, fmt.Errorf(errs.ServerError), methodName, http.StatusInternalServerError)
+		userErr := fmt.Errorf(errs.ServerError)
+		if err.Error() == errs.NoUserSuchUser {
+			userErr = err
+		}
+		t.handleError(w, err, userErr, methodName, http.StatusInternalServerError)
 
 		return
 	}

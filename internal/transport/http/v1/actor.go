@@ -42,7 +42,6 @@ func (t transport) AddActor(w http.ResponseWriter, r *http.Request) {
 
 	if err := validate.Struct(actorReq); err != nil {
 		t.handleError(w, err, fmt.Errorf(errs.ValidationError), methodName, http.StatusBadRequest)
-
 		return
 	}
 	actor := models.Actor{

@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"vk/internal/errs"
 )
 
 type Auth interface {
@@ -15,6 +17,9 @@ func (s service) Login(ctx context.Context, username string) (string, error) {
 	customer, err := s.repo.GetCustomerByUsername(ctxTx, username)
 	if err != nil {
 		return "", nil
+	}
+	if customer.Id == 0 {
+		return "", fmt.Errorf(errs.NoUserSuchUser)
 	}
 	jwtToken, err := s.CreateAccessToken(customer, 24*30)
 	if err != nil {
