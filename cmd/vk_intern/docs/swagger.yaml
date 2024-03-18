@@ -556,7 +556,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Добавляет фильм. Возвратит ошибку,если указать id несуществующего
+      description: Добавляет фильм. Вернет ошибку,если указать id несуществующего
         актера.
       parameters:
       - description: Модель запроса

@@ -26,7 +26,7 @@ import (
 //}
 
 // @Summary     Add
-// @Description Добавляет фильм. Возвратит ошибку,если указать id несуществующего актера.
+// @Description Добавляет фильм. Вернет ошибку,если указать id несуществующего актера.
 // @Tags        Film
 // @Accept      json
 // @Param data body request.AddFilm true "Модель запроса"

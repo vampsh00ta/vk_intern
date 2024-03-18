@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35d11b05-36cd-4cd2-88fb-d4703881a29a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/docs.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/repository/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/actor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/repository/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/film.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/repository/models/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/models/film.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/actor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/film.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/film.go" afterDir="false" />
-    </list>
+    <list default="true" id="35d11b05-36cd-4cd2-88fb-d4703881a29a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
