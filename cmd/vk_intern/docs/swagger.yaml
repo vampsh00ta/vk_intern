@@ -1,0 +1,536 @@
+basePath: /
+definitions:
+  models.Actor:
+    properties:
+      birth_date:
+        description: |-
+          Middlename string    `json:"middlename,omitempty" db:"middlename"`
+          Surname    string    `json:"surname,omitempty" db:"surname"`
+        type: string
+      films:
+        items:
+          $ref: '#/definitions/models.Film'
+        type: array
+      gender:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.Film:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/models.Actor'
+        type: array
+      description:
+        type: string
+      id:
+        type: integer
+      rating:
+        type: integer
+      release_date:
+        type: string
+      title:
+        type: string
+    type: object
+  request.AddActor:
+    properties:
+      birth_date:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      films:
+        example:
+        - 1
+        - 2
+        items:
+          type: integer
+        type: array
+      gender:
+        enum:
+        - male
+        - female
+        example: female
+        type: string
+      name:
+        example: ivan
+        type: string
+    required:
+    - birth_date
+    - gender
+    - name
+    type: object
+  request.AddFilm:
+    properties:
+      actors:
+        description: Actors      []models.Id `json:"actors,omitempty" `
+        items:
+          type: integer
+        type: array
+      description:
+        maxLength: 1000
+        type: string
+      rating:
+        maximum: 10
+        minimum: 0
+        type: integer
+      release_date:
+        type: string
+      title:
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - description
+    - title
+    type: object
+  request.Customer:
+    properties:
+      username:
+        type: string
+    required:
+    - username
+    type: object
+  request.DeleteActor:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  request.DeleteFilm:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  request.UpdateActor:
+    properties:
+      birth_date:
+        type: string
+      films:
+        description: Films     []models.Id `json:"films,omitempty""`
+        items:
+          type: integer
+        type: array
+      gender:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    type: object
+  response.AddFilm:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  response.GetActors:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/models.Actor'
+        type: array
+    type: object
+  response.GetFilms:
+    properties:
+      films:
+        items:
+          $ref: '#/definitions/models.Film'
+        type: array
+    type: object
+  response.Login:
+    properties:
+      access:
+        type: string
+    type: object
+  response.Ok:
+    properties:
+      status:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: Тестовое задание
+  title: Vk Intern
+  version: "1.0"
+paths:
+  /actor:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет актера
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.DeleteActor'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete
+      tags:
+      - Actor
+    patch:
+      consumes:
+      - application/json
+      description: Частично изменяет актера
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateActor'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: ChangePartly
+      tags:
+      - Actor
+    put:
+      consumes:
+      - application/json
+      description: Полностью изменяет актера
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateActor'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Change
+      tags:
+      - Actor
+  /actor/add:
+    post:
+      consumes:
+      - application/json
+      description: Создает актера
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddActor'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Add
+      tags:
+      - Actor
+  /actor/all:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает актеров
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetActors'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get
+      tags:
+      - Actor
+  /film:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет фильм
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.DeleteFilm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete
+      tags:
+      - Film
+    get:
+      consumes:
+      - application/json
+      description: Возвращает фильмы
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetFilms'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get
+      tags:
+      - Film
+    patch:
+      consumes:
+      - application/json
+      description: Частично изменяет фильмы
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: UpdatePartly
+      tags:
+      - Film
+    put:
+      consumes:
+      - application/json
+      description: Полностью изменяет фильмы
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Ok'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update
+      tags:
+      - Film
+  /film/add:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет фильм
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddFilm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.AddFilm'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Add
+      tags:
+      - Film
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 'Возвращает jwt токен. В базе есть 2 пользователя : admin и notadmin
+        с соотвествующими правами.'
+      parameters:
+      - description: Модель запроса
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Login'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: GetAccessToken
+      tags:
+      - Login
+securityDefinitions:
+  ApiKeyAuth:
+    description: Токен вида "Bearer access_token"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

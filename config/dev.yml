@@ -3,7 +3,7 @@ vk:
   version: '1.0.0'
 
 http:
-  port: '8080'
+  port: '8000'
 
 logger:
   log_level: 'debug'
@@ -18,6 +18,3 @@ postgres:
   name: "vk_intern"
   pool_max: 10
 
-#rabbitmq:
-#  rpc_server_exchange: 'rpc_server'
-#  rpc_client_exchange: 'rpc_client'

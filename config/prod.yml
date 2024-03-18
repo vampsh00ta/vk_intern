@@ -3,20 +3,17 @@ vk:
   version: '1.0.0'
 
 http:
-  port: '8080'
+  port: '8000'
 
 logger:
   log_level: 'debug'
   rollbar_env: 'vk'
-
+jwt:
+  secret_key: "slatt"
 postgres:
-  username: "maidtp"
-  password: "maidtp"
-  host: "localhost"
-  port: "5432"
-  name: "maidtp"
+  username: "docker_vk"
+  password: "docker_vk"
+  host: "db"
+  port: "6543"
+  name: "docker_vk"
   pool_max: 10
-
-#rabbitmq:
-#  rpc_server_exchange: 'rpc_server'
-#  rpc_client_exchange: 'rpc_client'

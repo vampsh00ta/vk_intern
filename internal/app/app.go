@@ -55,7 +55,7 @@ func Run(cfg *config.Config) {
 	t := v1.NewTransport(srvc, sugar)
 
 	log.Print("Listening...")
-	http.ListenAndServe(":8000", t)
+	http.ListenAndServe(":"+cfg.HTTP.Port, t)
 
 	select {
 	case <-interrupt:

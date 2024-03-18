@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+    image: app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - migrate
+    networks:
+      -  db-network
+  db:
+    image: postgres:14.6
+    restart: always
+    container_name: db
+    hostname: db
+    environment:
+      POSTGRES_DB: docker_vk
+      POSTGRES_PASSWORD: docker_vk
+      POSTGRES_USER: docker_vk
+    ports:
+      - "6543:6543"
+    volumes:
+      - psql:/var/lib/postgresql/data
+
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U docker_vk" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - db-network
+  migrate:
+    image: migrate/migrate
+    container_name: db_migrations
+    networks:
+      - db-network
+    volumes:
+      - ./migrations:/migrations
+    links:
+      - db
+    command: -path=/migrations -database postgres://docker_vk:docker_vk@db:5432/docker_vk?sslmode=disable up
+
+
+networks:
+  db-network:
+volumes:
+  psql:
