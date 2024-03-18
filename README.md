@@ -5,6 +5,7 @@ make start
 ```
 
 ## Тесты
+Покрытие 87.5 %
 
 ```
 make http-tests
