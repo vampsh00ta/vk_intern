@@ -64,20 +64,26 @@ definitions:
   request.AddFilm:
     properties:
       actors:
-        description: Actors      []models.Id `json:"actors,omitempty" `
+        example:
+        - 1
+        - 2
         items:
           type: integer
         type: array
       description:
+        example: test
         maxLength: 1000
         type: string
       rating:
+        example: 10
         maximum: 10
         minimum: 0
         type: integer
       release_date:
+        example: "2006-01-02T15:04:05Z"
         type: string
       title:
+        example: test
         maxLength: 150
         minLength: 1
         type: string
@@ -88,6 +94,7 @@ definitions:
   request.Customer:
     properties:
       username:
+        example: admin
         type: string
     required:
     - username
@@ -95,6 +102,7 @@ definitions:
   request.DeleteActor:
     properties:
       id:
+        example: 1
         type: integer
     required:
     - id
@@ -102,6 +110,7 @@ definitions:
   request.DeleteFilm:
     properties:
       id:
+        example: 1
         type: integer
     required:
     - id
@@ -109,17 +118,26 @@ definitions:
   request.UpdateActor:
     properties:
       birth_date:
+        example: "2006-01-02T15:04:05Z"
         type: string
       films:
-        description: Films     []models.Id `json:"films,omitempty""`
+        example:
+        - 1
+        - 2
         items:
           type: integer
         type: array
       gender:
+        enum:
+        - male
+        - female
+        example: female
         type: string
       id:
+        example: 1
         type: integer
       name:
+        example: ivan
         type: string
     required:
     - id
@@ -275,7 +293,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Создает актера
+      description: Создает актераю. Вернет ошибку,если указать id несуществующего
+        фильма.
       parameters:
       - description: Модель запроса
         in: body
@@ -311,7 +330,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Возвращает актеров
+      description: Возвращает актеров.
       produces:
       - application/json
       responses:
@@ -370,34 +389,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Delete
-      tags:
-      - Film
-    get:
-      consumes:
-      - application/json
-      description: Возвращает фильмы
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.GetFilms'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/response.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Get
       tags:
       - Film
     patch:
@@ -460,7 +451,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Добавляет фильм
+      description: Добавляет фильм. Возвратит ошибку,если указать id несуществующего
+        актера.
       parameters:
       - description: Модель запроса
         in: body
@@ -490,6 +482,52 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Add
+      tags:
+      - Film
+  /film/all:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает фильмы.
+      parameters:
+      - description: имя актера
+        in: query
+        name: name
+        type: string
+      - description: название фильма
+        in: query
+        name: title
+        type: string
+      - description: поле сортировки
+        in: query
+        name: sort_by
+        type: string
+      - description: порядок сортировки
+        in: query
+        name: order_by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetFilms'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get
       tags:
       - Film
   /login:

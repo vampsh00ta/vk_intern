@@ -14,6 +14,6 @@ postgres:
   username: "docker_vk"
   password: "docker_vk"
   host: "db"
-  port: "6543"
+  port: "5432"
   name: "docker_vk"
   pool_max: 10

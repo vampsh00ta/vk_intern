@@ -1,5 +1,5 @@
 package request
 
 type Customer struct {
-	Username string `json:"username"  validate:"required"`
+	Username string `json:"username" example:"admin" validate:"required"`
 }

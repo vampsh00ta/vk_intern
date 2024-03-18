@@ -26,7 +26,7 @@ import (
 //}
 
 // @Summary     Add
-// @Description Добавляет фильм
+// @Description Добавляет фильм. Возвратит ошибку,если указать id несуществующего актера.
 // @Tags        Film
 // @Accept      json
 // @Param data body request.AddFilm true "Модель запроса"
@@ -118,16 +118,20 @@ func (t transport) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 }
 
 // @Summary     Get
-// @Description Возвращает фильмы
+// @Description Возвращает фильмы.
 // @Tags        Film
 // @Accept      json
 // @Produce     json
+// @Param name query string false "имя актера"
+// @Param title query string false "название фильма"
+// @Param sort_by query string false "поле сортировки"
+// @Param order_by query string false "порядок сортировки"
 // @Success     200 {object} response.GetFilms
 // @Failure     400 {object} response.Error
 // @Failure     404 {object} response.Error
 // @Failure     500 {object} response.Error
 // @Security ApiKeyAuth
-// @Router      /film [get]
+// @Router      /film/all [get]
 func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

@@ -190,7 +190,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Создает актера",
+                "description": "Создает актераю. Вернет ошибку,если указать id несуществующего фильма.",
                 "consumes": [
                     "application/json"
                 ],
@@ -247,7 +247,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Возвращает актеров",
+                "description": "Возвращает актеров.",
                 "consumes": [
                     "application/json"
                 ],
@@ -287,50 +287,6 @@ const docTemplate = `{
             }
         },
         "/film": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Возвращает фильмы",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Film"
-                ],
-                "summary": "Get",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.GetFilms"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    }
-                }
-            },
             "put": {
                 "security": [
                     {
@@ -482,7 +438,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Добавляет фильм",
+                "description": "Добавляет фильм. Возвратит ошибку,если указать id несуществующего актера.",
                 "consumes": [
                     "application/json"
                 ],
@@ -509,6 +465,78 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/response.AddFilm"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/film/all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает фильмы.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Film"
+                ],
+                "summary": "Get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "имя актера",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "название фильма",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "поле сортировки",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "порядок сортировки",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.GetFilms"
                         }
                     },
                     "400": {
@@ -680,28 +708,35 @@ const docTemplate = `{
             ],
             "properties": {
                 "actors": {
-                    "description": "Actors      []models.Id ` + "`" + `json:\"actors,omitempty\" ` + "`" + `",
                     "type": "array",
                     "items": {
                         "type": "integer"
-                    }
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
                 },
                 "description": {
                     "type": "string",
-                    "maxLength": 1000
+                    "maxLength": 1000,
+                    "example": "test"
                 },
                 "rating": {
                     "type": "integer",
                     "maximum": 10,
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 10
                 },
                 "release_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
                 },
                 "title": {
                     "type": "string",
                     "maxLength": 150,
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "test"
                 }
             }
         },
@@ -712,7 +747,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin"
                 }
             }
         },
@@ -723,7 +759,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -734,7 +771,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -745,23 +783,34 @@ const docTemplate = `{
             ],
             "properties": {
                 "birth_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
                 },
                 "films": {
-                    "description": "Films     []models.Id ` + "`" + `json:\"films,omitempty\"\"` + "`" + `",
                     "type": "array",
                     "items": {
                         "type": "integer"
-                    }
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
                 },
                 "gender": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ],
+                    "example": "female"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ivan"
                 }
             }
         },

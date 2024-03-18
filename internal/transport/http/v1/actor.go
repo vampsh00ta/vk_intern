@@ -12,7 +12,7 @@ import (
 )
 
 // @Summary     Add
-// @Description Создает актера
+// @Description Создает актераю. Вернет ошибку,если указать id несуществующего фильма.
 // @Tags        Actor
 // @Accept      json
 // @Param data body request.AddActor true "Модель запроса"
@@ -98,7 +98,7 @@ func (t transport) DeleteActor(w http.ResponseWriter, r *http.Request) {
 }
 
 // @Summary     Get
-// @Description Возвращает актеров
+// @Description Возвращает актеров.
 // @Tags        Actor
 // @Accept      json
 // @Produce     json

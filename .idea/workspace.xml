@@ -6,10 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="35d11b05-36cd-4cd2-88fb-d4703881a29a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/errs/errs.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/errs/errs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/service/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/auth.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/actor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/docs.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/mock/film_mock.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/actor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/actor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/request/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/request/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/film.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
