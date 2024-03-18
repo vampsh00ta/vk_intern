@@ -268,6 +268,36 @@ func (_m *Service) GetFilmsByActorName(ctx context.Context, name string, sortBy 
 	return r0, r1
 }
 
+// GetFilmsByParams provides a mock function with given fields: ctx, params
+func (_m *Service) GetFilmsByParams(ctx context.Context, params models.SortParams) ([]models.Film, error) {
+	ret := _m.Called(ctx, params)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetFilmsByParams")
+	}
+
+	var r0 []models.Film
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.SortParams) ([]models.Film, error)); ok {
+		return rf(ctx, params)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.SortParams) []models.Film); ok {
+		r0 = rf(ctx, params)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.Film)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.SortParams) error); ok {
+		r1 = rf(ctx, params)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetFilmsByTitle provides a mock function with given fields: ctx, title, sortBy, orderBy
 func (_m *Service) GetFilmsByTitle(ctx context.Context, title string, sortBy string, orderBy string) ([]models.Film, error) {
 	ret := _m.Called(ctx, title, sortBy, orderBy)

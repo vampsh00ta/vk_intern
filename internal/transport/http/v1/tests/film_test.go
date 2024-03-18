@@ -520,8 +520,13 @@ func TestFilm_GetFilms(t *testing.T) {
 					[]any{true, nil},
 				},
 				{
-					"GetFilmsByTitle",
-					[]any{mock.Anything, "test", "", ""},
+					"GetFilmsByParams",
+					[]any{mock.Anything, models.SortParams{
+						ActorName: "",
+						Title:     "test",
+						SortBy:    "",
+						OrderBy:   "",
+					}},
 					[]any{[]models.Film{
 						models.Film{Id: 1,
 							Title:       "test",
@@ -533,6 +538,80 @@ func TestFilm_GetFilms(t *testing.T) {
 			},
 			expectedCode: 200,
 			expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z"}]}`,
+		},
+		{
+			name:        "ok actor search",
+			inputParams: `?name=test`,
+
+			mockFuncs: []MockMethod{
+				{
+					"IsLogged",
+					[]any{mock.Anything, mock.Anything},
+					[]any{true, nil},
+				},
+				{
+					"GetFilmsByParams",
+					[]any{mock.Anything, models.SortParams{
+						ActorName: "test",
+						Title:     "",
+						SortBy:    "",
+						OrderBy:   "",
+					}},
+					[]any{[]models.Film{
+						models.Film{
+							Actors: []models.Actor{
+								{
+									Name: "test",
+								},
+							},
+
+							Id:          1,
+							Title:       "test",
+							Description: "12341234",
+							Rating:      10,
+							ReleaseDate: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)},
+					}, nil},
+				},
+			},
+			expectedCode: 200,
+			expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z","actors":[{"name":"test","birth_date":"0001-01-01T00:00:00Z"}]}]}`,
+		},
+		{
+			name:        "ok actor+title search",
+			inputParams: `?name=test&title=test`,
+
+			mockFuncs: []MockMethod{
+				{
+					"IsLogged",
+					[]any{mock.Anything, mock.Anything},
+					[]any{true, nil},
+				},
+				{
+					"GetFilmsByParams",
+					[]any{mock.Anything, models.SortParams{
+						ActorName: "test",
+						Title:     "test",
+						SortBy:    "",
+						OrderBy:   "",
+					}},
+					[]any{[]models.Film{
+						models.Film{
+							Actors: []models.Actor{
+								{
+									Name: "test",
+								},
+							},
+
+							Id:          1,
+							Title:       "test",
+							Description: "12341234",
+							Rating:      10,
+							ReleaseDate: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC)},
+					}, nil},
+				},
+			},
+			expectedCode: 200,
+			expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z","actors":[{"name":"test","birth_date":"0001-01-01T00:00:00Z"}]}]}`,
 		},
 		{
 			name:        "ok  sort/order by",
@@ -564,36 +643,36 @@ func TestFilm_GetFilms(t *testing.T) {
 			expectedCode: 200,
 			expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z"},{"id":2,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z"}]}`,
 		},
-		{
-			name:        "ok  actor",
-			inputParams: `?name=test`,
-
-			mockFuncs: []MockMethod{
-				{
-					"IsLogged",
-					[]any{mock.Anything, mock.Anything},
-					[]any{true, nil},
-				},
-				{
-					"GetFilmsByActorName",
-					[]any{mock.Anything, "test", "", ""},
-					[]any{[]models.Film{
-						models.Film{Id: 1,
-
-							Title:       "test",
-							Description: "12341234",
-							Rating:      10,
-							ReleaseDate: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
-							Actors: []models.Actor{
-								{Name: "test"},
-							},
-						},
-					}, nil},
-				},
-			},
-			expectedCode: 200,
-			expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z","actors":[{"name":"test","birth_date":"0001-01-01T00:00:00Z"}]}]}`,
-		},
+		//{
+		//	name:        "ok  actor",
+		//	inputParams: `?name=test`,
+		//
+		//	mockFuncs: []MockMethod{
+		//		{
+		//			"IsLogged",
+		//			[]any{mock.Anything, mock.Anything},
+		//			[]any{true, nil},
+		//		},
+		//		{
+		//			"GetFilmsByActorName",
+		//			[]any{mock.Anything, "test", "", ""},
+		//			[]any{[]models.Film{
+		//				models.Film{Id: 1,
+		//
+		//					Title:       "test",
+		//					Description: "12341234",
+		//					Rating:      10,
+		//					ReleaseDate: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+		//					Actors: []models.Actor{
+		//						{Name: "test"},
+		//					},
+		//				},
+		//			}, nil},
+		//		},
+		//	},
+		//	expectedCode: 200,
+		//	expectedBody: `{"films":[{"id":1,"title":"test","description":"12341234","rating":10,"release_date":"2000-01-01T00:00:00Z","actors":[{"name":"test","birth_date":"0001-01-01T00:00:00Z"}]}]}`,
+		//},
 		{
 			name: "server err",
 

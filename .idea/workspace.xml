@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35d11b05-36cd-4cd2-88fb-d4703881a29a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.bashrc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/docs.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/docs/swagger.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/vk_intern/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/vk_intern/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/errs/errs.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/errs/errs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/mocks/Service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/mocks/Service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/film.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/film.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/http/v1/tests/film_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/http/v1/tests/film_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +57,8 @@
     "Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests.executor": "Run",
     "Go Test.TestFilm_GetFilms in vk/internal/transport/http/v1/tests.executor": "Run",
     "Go Test.TestFilm_GetFilms/ok__actor in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms/ok_actor+title_search in vk/internal/transport/http/v1/tests.executor": "Run",
+    "Go Test.TestFilm_GetFilms/ok_actor_search in vk/internal/transport/http/v1/tests.executor": "Run",
     "Go Test.TestFilm_GetFilms/ok_title_search in vk/internal/transport/http/v1/tests.executor": "Run",
     "Go Test.TestFilm_GetFilms/ok_title_sort/order_by in vk/internal/transport/http/v1/tests.executor": "Run",
     "Go Test.TestFilm_UpdateActor in vk/internal/transport/http/v1/tests.executor": "Run",
@@ -96,19 +93,7 @@
       <recent name="$PROJECT_DIR$/internal/service/jwt" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests">
-    <configuration name="TestFilm_DeleteActor in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="vk" />
-      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="vk/internal/transport/http/v1/tests" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestFilm_DeleteActor\E$" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Test.TestFilm_GetFilms/ok_actor+title_search in vk/internal/transport/http/v1/tests">
     <configuration name="TestFilm_GetActors in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="vk" />
       <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
@@ -121,7 +106,7 @@
       <pattern value="^\QTestFilm_GetActors\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestFilm_UpdateActor in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestFilm_GetFilms in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="vk" />
       <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
       <root_directory value="$PROJECT_DIR$" />
@@ -130,10 +115,10 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestFilm_UpdateActor\E$" />
+      <pattern value="^\QTestFilm_GetFilms\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestFilm_UpdateActorPartly in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestFilm_GetFilms/ok_actor_search in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="vk" />
       <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
       <root_directory value="$PROJECT_DIR$" />
@@ -142,10 +127,10 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestFilm_UpdateActorPartly\E$" />
+      <pattern value="^\QTestFilm_GetFilms\E$/^\Qok_actor_search\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestFilm_UpdateFilmPartly in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestFilm_GetFilms/ok_actor+title_search in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="vk" />
       <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
       <root_directory value="$PROJECT_DIR$" />
@@ -154,16 +139,28 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestFilm_UpdateFilmPartly\E$" />
+      <pattern value="^\QTestFilm_GetFilms\E$/^\Qok_actor+title_search\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFilm_GetFilms/ok_title_search in vk/internal/transport/http/v1/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="vk" />
+      <working_directory value="$PROJECT_DIR$/internal/transport/http/v1/tests" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="vk/internal/transport/http/v1/tests" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestFilm_GetFilms\E$/^\Qok_title_search\E$" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestFilm_GetFilms/ok_actor+title_search in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_GetFilms/ok_actor_search in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_GetFilms/ok_title_search in vk/internal/transport/http/v1/tests" />
+        <item itemvalue="Go Test.TestFilm_GetFilms in vk/internal/transport/http/v1/tests" />
         <item itemvalue="Go Test.TestFilm_GetActors in vk/internal/transport/http/v1/tests" />
-        <item itemvalue="Go Test.TestFilm_DeleteActor in vk/internal/transport/http/v1/tests" />
-        <item itemvalue="Go Test.TestFilm_UpdateFilmPartly in vk/internal/transport/http/v1/tests" />
-        <item itemvalue="Go Test.TestFilm_UpdateActorPartly in vk/internal/transport/http/v1/tests" />
-        <item itemvalue="Go Test.TestFilm_UpdateActor in vk/internal/transport/http/v1/tests" />
       </list>
     </recent_temporary>
   </component>

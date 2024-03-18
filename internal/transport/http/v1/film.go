@@ -148,10 +148,16 @@ func (t transport) GetFilms(w http.ResponseWriter, r *http.Request) {
 	queryForm.Title = r.URL.Query().Get("title")
 	var films []models.Film
 	var err error
-	if queryForm.Title != "" {
-		films, err = t.s.GetFilmsByTitle(r.Context(), queryForm.Title, queryForm.SortBy, queryForm.OrderBy)
-	} else if queryForm.Name != "" {
-		films, err = t.s.GetFilmsByActorName(r.Context(), queryForm.Name, queryForm.SortBy, queryForm.OrderBy)
+	if queryForm.Title != "" || queryForm.Name != "" {
+		films, err = t.s.GetFilmsByParams(r.Context(),
+			models.SortParams{
+				Title:     queryForm.Title,
+				ActorName: queryForm.Name,
+				SortBy:    queryForm.SortBy,
+				OrderBy:   queryForm.OrderBy,
+			},
+		)
+
 	} else {
 		films, err = t.s.GetFilms(r.Context(), queryForm.SortBy, queryForm.OrderBy)
 

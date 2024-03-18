@@ -47,7 +47,7 @@ func NewTransport(t service.Service, l *zap.SugaredLogger) http.Handler {
 	mux.HandleFunc("PUT /actor", r.UpdateActor)
 	mux.HandleFunc("PATCH /actor", r.UpdateActorPartly)
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://127.0.0.1:8080/"},
+		AllowedOrigins:   []string{"http://127.0.0.1:8000/"},
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 		AllowCredentials: true,
 	})

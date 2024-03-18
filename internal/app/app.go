@@ -55,8 +55,10 @@ func Run(cfg *config.Config) {
 	t := v1.NewTransport(srvc, sugar)
 
 	log.Print("Listening...")
-	http.ListenAndServe(":"+cfg.HTTP.Port, t)
 
+	if err := http.ListenAndServe(":"+cfg.HTTP.Port, t); err != nil {
+		panic(err)
+	}
 	select {
 	case <-interrupt:
 		panic("exit")
